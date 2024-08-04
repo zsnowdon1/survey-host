@@ -64,3 +64,14 @@ application-*.yml
 
 # Maven Wrapper
 .mvn/wrapper/maven-wrapper.jar
+
+.classpath
+
+
+mvnw
+mvnw.cmd
+
+
+.project
+.settings/
+HELP.md

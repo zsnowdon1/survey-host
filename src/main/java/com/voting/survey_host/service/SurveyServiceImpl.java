@@ -1,6 +1,7 @@
 package com.voting.survey_host.service;
 
 import com.voting.survey_host.dao.SurveyDao;
+import com.voting.survey_host.dto.StartSurveyRequest;
 import com.voting.survey_host.entity.Choice;
 import com.voting.survey_host.dto.CreateSurveyRequest;
 import com.voting.survey_host.entity.Question;
@@ -37,7 +38,10 @@ public class SurveyServiceImpl implements SurveyService {
                 choice.setChoiceId(choiceId);
             }
         }
+    }
 
+    @Override
+    public void startSurvey(StartSurveyRequest request) {
 
     }
 
