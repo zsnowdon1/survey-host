@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/survey/createSurvey").permitAll()
+                        .requestMatchers("/survey/test").permitAll()
                         .anyRequest().authenticated())
                 .formLogin((Customizer.withDefaults()))
                 .httpBasic(Customizer.withDefaults());
