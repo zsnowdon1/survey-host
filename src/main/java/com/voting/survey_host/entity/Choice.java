@@ -4,15 +4,12 @@ public class Choice {
 
     private int choiceId;
 
-    private int surveyId;
-
     private int questionId;
 
     private String choice;
 
-    public Choice(int choiceId, int surveyId, int questionId, String choice) {
+    public Choice(int choiceId, int questionId, String choice) {
         this.choiceId = choiceId;
-        this.surveyId = surveyId;
         this.questionId = questionId;
         this.choice = choice;
     }
@@ -23,14 +20,6 @@ public class Choice {
 
     public void setChoiceId(int choiceId) {
         this.choiceId = choiceId;
-    }
-
-    public int getSurveyId() {
-        return surveyId;
-    }
-
-    public void setSurveyId(int surveyId) {
-        this.surveyId = surveyId;
     }
 
     public int getQuestionId() {
