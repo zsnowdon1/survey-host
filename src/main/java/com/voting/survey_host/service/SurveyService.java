@@ -16,4 +16,6 @@ public interface SurveyService {
 
     void startSurvey(StartSurveyRequest request);
 
+    Survey getSurveyById(Long id);
+
 }

@@ -2,8 +2,6 @@ package com.voting.survey_host.controller;
 
 import com.voting.survey_host.dto.CreateSurveyRequest;
 import com.voting.survey_host.dto.CreateSurveyResponse;
-import com.voting.survey_host.dto.StartSurveyReponse;
-import com.voting.survey_host.dto.StartSurveyRequest;
 import com.voting.survey_host.entity.Survey;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
@@ -36,7 +34,7 @@ public class SurveyHostController {
         return null;
     }
 
-    @GetMapping("{hostname}")
+    @GetMapping("/hostname/{hostname}")
     public ResponseEntity<List<Survey>> getSurveysByHost(@PathVariable String hostname) {
         logger.info("Received survey list request for {}", hostname);
         try {
@@ -49,6 +47,16 @@ public class SurveyHostController {
         }
     }
 
+    @GetMapping("/{surveyId}")
+    public ResponseEntity<Survey> getSurveyById(@PathVariable("surveyId") int surveyId) {
+        logger.info("Received get survey request for surveyId {}", surveyId);
+        try {
+            Survey survey = surveyService.getSurveyById((long) surveyId);
+            return new ResponseEntity<>(survey, HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 //    @PostMapping("/startSurvey")
 //    public ResponseEntity<StartSurveyReponse> startSurvey(@RequestBody StartSurveyRequest request) {
 //        try {
@@ -59,9 +67,9 @@ public class SurveyHostController {
 //        return null;
 //    }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> testRequest() {
-        logger.info("Received test request");
-        return new ResponseEntity<>("Success", HttpStatus.ACCEPTED);
-    }
+//    @GetMapping("/test")
+//    public ResponseEntity<String> testRequest() {
+//        logger.info("Received test request");
+//        return new ResponseEntity<>("Success", HttpStatus.ACCEPTED);
+//    }
 }
