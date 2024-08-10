@@ -33,11 +33,15 @@ public class SurveyServiceImpl implements SurveyService {
 
             for(Choice choice: question.getChoices()) {
                 choice.setQuestionId(questionId);
-                choice.setSurveyId(surveyId);
                 int choiceId = surveyDao.createChoice(choice);
                 choice.setChoiceId(choiceId);
             }
         }
+    }
+
+    @Override
+    public List<Survey> getSurveysByHost(String hostname) {
+        return surveyDao.getSurveysByHost(hostname);
     }
 
     @Override

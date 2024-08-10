@@ -7,7 +7,10 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -26,13 +29,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/survey/test").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin((Customizer.withDefaults()))
-                .httpBasic(Customizer.withDefaults());
-
+                .csrf(csrf -> csrf.disable()) // Disable CSRF protection if needed
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()) // Allow all routes without authentication
+                .formLogin(Customizer.withDefaults()) // Optional: Enable form login
+                .httpBasic(Customizer.withDefaults()); //
         return http.build();
     }
 

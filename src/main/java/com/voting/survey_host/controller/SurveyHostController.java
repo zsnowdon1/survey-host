@@ -4,6 +4,7 @@ import com.voting.survey_host.dto.CreateSurveyRequest;
 import com.voting.survey_host.dto.CreateSurveyResponse;
 import com.voting.survey_host.dto.StartSurveyReponse;
 import com.voting.survey_host.dto.StartSurveyRequest;
+import com.voting.survey_host.entity.Survey;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/survey")
+@RequestMapping("/surveys")
 public class SurveyHostController {
 
     @Autowired
@@ -32,15 +35,26 @@ public class SurveyHostController {
         return null;
     }
 
-    @PostMapping("/startSurvey")
-    public ResponseEntity<StartSurveyReponse> startSurvey(@RequestBody StartSurveyRequest request) {
+    @GetMapping("{hostname}")
+    public ResponseEntity<List<Survey>> getSurveysByHost(@PathVariable String hostname) {
+        logger.info("Received survey list request for {}", hostname);
         try {
-
+            List<Survey> surveys = surveyService.getSurveysByHost(hostname);
+            return new ResponseEntity<>(surveys, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return null;
     }
+
+//    @PostMapping("/startSurvey")
+//    public ResponseEntity<StartSurveyReponse> startSurvey(@RequestBody StartSurveyRequest request) {
+//        try {
+//
+//        } catch (Exception e) {
+//
+//        }
+//        return null;
+//    }
 
     @GetMapping("/test")
     public ResponseEntity<String> testRequest() {

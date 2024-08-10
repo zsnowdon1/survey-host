@@ -19,6 +19,8 @@ public class Survey {
         this.title = title;
     }
 
+    public Survey() { }
+
     public int getSurveyId() {
         return surveyId;
     }
