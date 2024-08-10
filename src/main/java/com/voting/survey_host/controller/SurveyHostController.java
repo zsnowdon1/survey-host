@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/surveys")
+@CrossOrigin(origins = "http:/localhost:3000")
 public class SurveyHostController {
 
     @Autowired
@@ -40,8 +41,10 @@ public class SurveyHostController {
         logger.info("Received survey list request for {}", hostname);
         try {
             List<Survey> surveys = surveyService.getSurveysByHost(hostname);
+            logger.info("Successfully retrieved surveys for {}", hostname);
             return new ResponseEntity<>(surveys, HttpStatus.ACCEPTED);
         } catch (Exception e) {
+            logger.info("Failed retrieving surveys for {}", hostname);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
