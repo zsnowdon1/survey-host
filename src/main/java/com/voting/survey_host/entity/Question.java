@@ -4,34 +4,36 @@ import java.util.List;
 
 public class Question {
 
-    private int questionId;
+    private Long questionId;
 
-    private int surveyId;
+    private Long surveyId;
 
     private String question;
 
     private List<Choice> choices;
 
-    public Question(int questionId, int surveyId, String question, List<Choice> choices) {
+    public Question(Long questionId, Long surveyId, String question, List<Choice> choices) {
         this.questionId = questionId;
         this.surveyId = surveyId;
         this.question = question;
         this.choices = choices;
     }
 
-    public int getQuestionId() {
+    public Question() { }
+
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 
-    public int getSurveyId() {
+    public Long getSurveyId() {
         return surveyId;
     }
 
-    public void setSurveyId(int surveyId) {
+    public void setSurveyId(Long surveyId) {
         this.surveyId = surveyId;
     }
 

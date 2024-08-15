@@ -2,31 +2,33 @@ package com.voting.survey_host.entity;
 
 public class Choice {
 
-    private int choiceId;
+    private Long choiceId;
 
-    private int questionId;
+    private Long questionId;
 
     private String choice;
 
-    public Choice(int choiceId, int questionId, String choice) {
+    public Choice(Long choiceId, Long questionId, String choice) {
         this.choiceId = choiceId;
         this.questionId = questionId;
         this.choice = choice;
     }
 
-    public int getChoiceId() {
+    public Choice() { }
+
+    public Long getChoiceId() {
         return choiceId;
     }
 
-    public void setChoiceId(int choiceId) {
+    public void setChoiceId(Long choiceId) {
         this.choiceId = choiceId;
     }
 
-    public int getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 

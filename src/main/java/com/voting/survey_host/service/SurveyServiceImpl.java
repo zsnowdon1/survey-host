@@ -6,6 +6,8 @@ import com.voting.survey_host.entity.Choice;
 import com.voting.survey_host.dto.CreateSurveyRequest;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,32 +19,54 @@ public class SurveyServiceImpl implements SurveyService {
     @Autowired
     private SurveyDao surveyDao;
 
+    private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
+
     @Override
     public void createSurvey(CreateSurveyRequest request) {
         String username = request.getUsername();
 
         Survey survey = new Survey(request.getUsername(), request.getTitle());
 
-        int surveyId =  surveyDao.createSurvey(survey);
+        Long surveyId =  surveyDao.createSurvey(survey);
         survey.setSurveyId(surveyId);
 
         for(Question question: request.getQuestionList()) {
             question.setSurveyId(surveyId);
-            int questionId = surveyDao.createQuestion(question);
+            Long questionId = surveyDao.createQuestion(question);
             question.setQuestionId(questionId);
 
             for(Choice choice: question.getChoices()) {
                 choice.setQuestionId(questionId);
-                choice.setSurveyId(surveyId);
-                int choiceId = surveyDao.createChoice(choice);
+                Long choiceId = surveyDao.createChoice(choice);
                 choice.setChoiceId(choiceId);
             }
         }
     }
 
     @Override
+    public List<Survey> getSurveysByHost(String hostname) {
+//        logger.info("RE");
+        return surveyDao.getSurveysByHost(hostname);
+    }
+
+    @Override
     public void startSurvey(StartSurveyRequest request) {
 
+    }
+
+    @Override
+    public Survey getSurveyById(Long id) {
+        return surveyDao.getSurveyById(id);
+    }
+
+    @Override
+    public List<Question> getQuestionsBySurvey(Long surveyId) {
+        return surveyDao.getQuestionsBySurvey(surveyId);
+    }
+
+    @Override
+    public List<Choice> getChoicesByQuestion(Long questionId) {
+        return surveyDao.getChoicesByQuestion(questionId);
     }
 
 }

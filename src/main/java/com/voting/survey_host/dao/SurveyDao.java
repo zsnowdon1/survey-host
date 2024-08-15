@@ -4,11 +4,21 @@ import com.voting.survey_host.entity.Choice;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 
+import java.util.List;
+
 public interface SurveyDao {
 
-    int createSurvey(Survey request);
+    Long createSurvey(Survey request);
 
-    int createQuestion(Question request);
+    Long createQuestion(Question request);
 
-    int createChoice(Choice choice);
+    List<Survey> getSurveysByHost(String host);
+
+    Survey getSurveyById(Long id);
+
+    Long createChoice(Choice choice);
+
+    List<Question> getQuestionsBySurvey(Long surveyId);
+
+    List<Choice> getChoicesByQuestion(Long questionId);
 }
