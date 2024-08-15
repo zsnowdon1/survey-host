@@ -17,4 +17,8 @@ public interface SurveyDao {
     Survey getSurveyById(Long id);
 
     Long createChoice(Choice choice);
+
+    List<Question> getQuestionsBySurvey(Long surveyId);
+
+    List<Choice> getChoicesByQuestion(Long questionId);
 }

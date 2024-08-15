@@ -59,4 +59,14 @@ public class SurveyServiceImpl implements SurveyService {
         return surveyDao.getSurveyById(id);
     }
 
+    @Override
+    public List<Question> getQuestionsBySurvey(Long surveyId) {
+        return surveyDao.getQuestionsBySurvey(surveyId);
+    }
+
+    @Override
+    public List<Choice> getChoicesByQuestion(Long questionId) {
+        return surveyDao.getChoicesByQuestion(questionId);
+    }
+
 }

@@ -5,6 +5,8 @@ import com.voting.survey_host.entity.DBConstants;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 import com.voting.survey_host.resultSetExtractor.SurveyResultSetExtractor;
+import com.voting.survey_host.rowMapper.ChoiceRowMapper;
+import com.voting.survey_host.rowMapper.QuestionRowMapper;
 import com.voting.survey_host.rowMapper.SurveyRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,5 +89,25 @@ public class SurveyDaoImpl implements SurveyDao{
         }, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    @Override
+    public List<Question> getQuestionsBySurvey(Long surveyId) {
+        try {
+            return jdbcTemplate.query(getQuestionsBySurveyQuery, new QuestionRowMapper(surveyId), surveyId);
+        } catch (Exception e) {
+            logger.info("Error getting survey by host");
+            return null;
+        }
+    }
+
+    @Override
+    public List<Choice> getChoicesByQuestion(Long questionId) {
+        try {
+            return jdbcTemplate.query(getQuestionsBySurveyQuery, new ChoiceRowMapper(questionId), questionId);
+        } catch (Exception e) {
+            logger.info("Error getting survey by host");
+            return null;
+        }
     }
 }

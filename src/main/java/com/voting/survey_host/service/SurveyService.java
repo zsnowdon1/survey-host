@@ -2,6 +2,8 @@ package com.voting.survey_host.service;
 
 import com.voting.survey_host.dto.CreateSurveyRequest;
 import com.voting.survey_host.dto.StartSurveyRequest;
+import com.voting.survey_host.entity.Choice;
+import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +19,9 @@ public interface SurveyService {
     void startSurvey(StartSurveyRequest request);
 
     Survey getSurveyById(Long id);
+
+    List<Question> getQuestionsBySurvey(Long surveyId);
+
+    List<Choice> getChoicesByQuestion(Long questionId);
 
 }
