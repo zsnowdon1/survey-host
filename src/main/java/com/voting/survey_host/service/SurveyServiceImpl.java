@@ -37,7 +37,7 @@ public class SurveyServiceImpl implements SurveyService {
 
             for(Choice choice: question.getChoices()) {
                 choice.setQuestionId(questionId);
-                Long choiceId = surveyDao.createChoice(choice);
+                Long choiceId = surveyDao.addChoice(choice);
                 choice.setChoiceId(choiceId);
             }
         }
@@ -55,18 +55,38 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public Survey getSurveyById(Long id) {
+    public Survey getSurveyById(long id) {
         return surveyDao.getSurveyById(id);
     }
 
     @Override
-    public List<Question> getQuestionsBySurvey(Long surveyId) {
-        return surveyDao.getQuestionsBySurvey(surveyId);
+    public Question getQuestionById(long questionId) {
+        return surveyDao.getQuestionById(questionId);
     }
 
     @Override
-    public List<Choice> getChoicesByQuestion(Long questionId) {
-        return surveyDao.getChoicesByQuestion(questionId);
+    public List<Question> getQuestionList(long surveyId) {
+        return surveyDao.getQuestionList(surveyId);
+    }
+
+    @Override
+    public List<Choice> getChoiceList(long questionId) {
+        return surveyDao.getChoiceList(questionId);
+    }
+
+    @Override
+    public Choice addChoice(long questionId, String newChoice) {
+        Choice choice = new Choice();
+        choice.setQuestionId(questionId);
+        choice.setChoice(newChoice);
+        long choiceId = surveyDao.addChoice(choice);
+        choice.setChoiceId(choiceId);
+        return choice;
+    }
+
+    @Override
+    public long deleteChoice(long choiceId) {
+        return surveyDao.deleteChoice(choiceId);
     }
 
 }
