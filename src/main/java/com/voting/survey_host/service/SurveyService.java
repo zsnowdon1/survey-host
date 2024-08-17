@@ -28,6 +28,10 @@ public interface SurveyService {
 
     Choice addChoice(long questionId, String newChoice);
 
-    long deleteChoice(long choiceId);
+    Question addQuestion(Question newQuestion);
+
+    int deleteChoice(long choiceId);
+
+    int deleteQuestion(long questionId);
 
 }

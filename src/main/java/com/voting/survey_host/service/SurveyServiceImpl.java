@@ -32,20 +32,13 @@ public class SurveyServiceImpl implements SurveyService {
 
         for(Question question: request.getQuestionList()) {
             question.setSurveyId(surveyId);
-            Long questionId = surveyDao.createQuestion(question);
+            Long questionId = surveyDao.addQuestion(question);
             question.setQuestionId(questionId);
-
-            for(Choice choice: question.getChoices()) {
-                choice.setQuestionId(questionId);
-                Long choiceId = surveyDao.addChoice(choice);
-                choice.setChoiceId(choiceId);
-            }
         }
     }
 
     @Override
     public List<Survey> getSurveysByHost(String hostname) {
-//        logger.info("RE");
         return surveyDao.getSurveysByHost(hostname);
     }
 
@@ -85,8 +78,20 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public long deleteChoice(long choiceId) {
+    public Question addQuestion(Question newQuestion) {
+        long questionId = surveyDao.addQuestion(newQuestion);
+        newQuestion.setQuestionId(questionId);
+        return newQuestion;
+    }
+
+    @Override
+    public int deleteChoice(long choiceId) {
         return surveyDao.deleteChoice(choiceId);
+    }
+
+    @Override
+    public int deleteQuestion(long questionId) {
+        return surveyDao.deleteQuestion(questionId);
     }
 
 }

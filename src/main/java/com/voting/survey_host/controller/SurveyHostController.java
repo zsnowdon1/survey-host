@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -67,6 +65,7 @@ public class SurveyHostController {
 
     @PutMapping("/addChoice")
     public ResponseEntity<Long> addChoice(@RequestBody AddChoiceRequest addChoiceRequest) {
+        logger.info("Received add choice request for question {}", addChoiceRequest.getQuestionId());
         try {
             Choice choice = surveyService.addChoice(addChoiceRequest.getQuestionId(), addChoiceRequest.getNewChoice());
             if(choice.getChoiceId() != -1) {
@@ -79,13 +78,43 @@ public class SurveyHostController {
         }
     }
 
+    @PutMapping("/addQuestion")
+    public ResponseEntity<Long> addQuestion(@RequestBody Question newQuestion) {
+        logger.info("Received add question request for survey {}", newQuestion.getSurveyId());
+        try {
+            Question question = surveyService.addQuestion(newQuestion);
+            if(question.getQuestionId() != -1) {
+                return new ResponseEntity<>(question.getQuestionId(), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/choices/{choiceId}")
     public ResponseEntity<Long> deleteChoice(@PathVariable("choiceId") long choiceId) {
         logger.info("Received request to delete choice {}", choiceId);
         try {
-            long rowsAffected = surveyService.deleteChoice(choiceId);
+            int rowsAffected = surveyService.deleteChoice(choiceId);
             if(rowsAffected > 0) {
                 return new ResponseEntity<>(choiceId, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/questions/{questionId}")
+    public ResponseEntity<Long> deleteQuestion(@PathVariable("questionId") long questionId) {
+        logger.info("Received request to delete question {}", questionId);
+        try {
+            long rowsAffected = surveyService.deleteQuestion(questionId);
+            if(rowsAffected > 0) {
+                return new ResponseEntity<>(questionId, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

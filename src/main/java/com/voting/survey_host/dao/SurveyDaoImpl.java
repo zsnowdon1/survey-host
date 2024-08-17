@@ -44,15 +44,23 @@ public class SurveyDaoImpl implements SurveyDao{
     }
 
     @Override
-    public long createQuestion(Question request) {
+    public long addQuestion(Question question) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(createQuestionQuery, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, request.getSurveyId());
-            ps.setString(2, request.getQuestion());
+            ps.setLong(1, question.getSurveyId());
+            ps.setString(2, question.getQuestion());
             return ps;
         }, keyHolder);
+
+        question.setQuestionId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+
+        jdbcTemplate.batchUpdate(createChoiceQuery, question.getChoices(), question.getChoices().size(),
+                (ps, choice) -> {
+                    ps.setLong(1, question.getQuestionId());
+                    ps.setString(2, choice.getChoice());
+                });
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
@@ -134,7 +142,14 @@ public class SurveyDaoImpl implements SurveyDao{
     }
 
     @Override
-    public long deleteChoice(long choiceId) {
+    public int deleteChoice(long choiceId) {
         return jdbcTemplate.update(deleteChoiceQuery, choiceId);
+    }
+
+    @Override
+    public int deleteQuestion(long questionId) {
+        int choicesDeleted = jdbcTemplate.update(deleteChoiceByQuestionQuery, questionId);
+        logger.info("Deleted {} choices for question {}", choicesDeleted, questionId);
+        return jdbcTemplate.update(deleteQuestionQuery, questionId);
     }
 }

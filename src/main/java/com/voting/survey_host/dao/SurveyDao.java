@@ -10,7 +10,7 @@ public interface SurveyDao {
 
     long createSurvey(Survey request);
 
-    long createQuestion(Question request);
+    long addQuestion(Question request);
 
     long addChoice(Choice choice);
 
@@ -24,5 +24,7 @@ public interface SurveyDao {
 
     List<Choice> getChoiceList(long questionId);
 
-    long deleteChoice(long choiceId);
+    int deleteChoice(long choiceId);
+
+    int deleteQuestion(long questionId);
 }
