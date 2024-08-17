@@ -18,10 +18,16 @@ public interface SurveyService {
 
     void startSurvey(StartSurveyRequest request);
 
-    Survey getSurveyById(Long id);
+    Survey getSurveyById(long surveyId);
 
-    List<Question> getQuestionsBySurvey(Long surveyId);
+    Question getQuestionById(long questionId);
 
-    List<Choice> getChoicesByQuestion(Long questionId);
+    List<Question> getQuestionList(long surveyId);
+
+    List<Choice> getChoiceList(long questionId);
+
+    Choice addChoice(long questionId, String newChoice);
+
+    long deleteChoice(long choiceId);
 
 }

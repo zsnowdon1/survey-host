@@ -8,17 +8,21 @@ import java.util.List;
 
 public interface SurveyDao {
 
-    Long createSurvey(Survey request);
+    long createSurvey(Survey request);
 
-    Long createQuestion(Question request);
+    long createQuestion(Question request);
+
+    long addChoice(Choice choice);
 
     List<Survey> getSurveysByHost(String host);
 
-    Survey getSurveyById(Long id);
+    Survey getSurveyById(long surveyId);
 
-    Long createChoice(Choice choice);
+    Question getQuestionById(long questionId);
 
-    List<Question> getQuestionsBySurvey(Long surveyId);
+    List<Question> getQuestionList(long surveyId);
 
-    List<Choice> getChoicesByQuestion(Long questionId);
+    List<Choice> getChoiceList(long questionId);
+
+    long deleteChoice(long choiceId);
 }
