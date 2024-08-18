@@ -9,9 +9,13 @@ public final class DBConstants {
     public static final String getQuestionByIdQuery = "SELECT survey_id, question FROM question WHERE question_id=?";
     public static final String getQuestionsBySurveyQuery = "SELECT question_id, question FROM question WHERE survey_id=?";
     public static final String getChoicesByQuestionQuery = "SELECT choice_id, choice FROM choice WHERE question_id=?";
-    public static final String deleteChoiceQuery = "DELETE FROM choice WHERE choice_id=?";
+    public static final String deleteSurveyQuery = "DELETE FROM survey WHERE survey_id=?";
     public static final String deleteQuestionQuery = "DELETE FROM question WHERE question_id=?";
+    public static final String deleteQuestionBySurvey = "DELETE FROM question where survey_id=?";
+    public static final String deleteChoiceQuery = "DELETE FROM choice WHERE choice_id=?";
     public static final String deleteChoiceByQuestionQuery = "DELETE FROM choice WHERE question_id=?";
+    public static final String deleteChoicesBySurvey = "DELETE FROM choice WHERE question_id IN " +
+            "(SELECT DISTINCT question_id FROM question where survey_id=?)";
     public static final String getSurveyById =
             "select s1.survey_id, s1.host_username, s1.title, q1.question_id , q1.question, c1.choice_id, c1.choice \n" +
             "from survey s1 LEFT OUTER JOIN \n" +

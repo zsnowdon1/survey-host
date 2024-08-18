@@ -1,5 +1,6 @@
 package com.voting.survey_host.service;
 
+import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.dto.CreateSurveyRequest;
 import com.voting.survey_host.dto.StartSurveyRequest;
 import com.voting.survey_host.entity.Choice;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 public interface SurveyService {
 
-    void createSurvey(CreateSurveyRequest request);
+    long createEmptySurvey(String title);
 
     List<Survey> getSurveysByHost(String hostname);
 
@@ -26,9 +27,11 @@ public interface SurveyService {
 
     List<Choice> getChoiceList(long questionId);
 
-    Choice addChoice(long questionId, String newChoice);
+    long addChoice(long questionId, String newChoice);
 
-    Question addQuestion(Question newQuestion);
+    long addQuestion(AddQuestionRequest newQuestion);
+
+    int deleteSurvey(long surveyId);
 
     int deleteChoice(long choiceId);
 

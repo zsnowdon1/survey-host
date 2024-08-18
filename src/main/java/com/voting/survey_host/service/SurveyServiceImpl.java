@@ -1,9 +1,9 @@
 package com.voting.survey_host.service;
 
-import com.voting.survey_host.dao.SurveyDao;
+import com.voting.survey_host.dao.SurveyDaoImpl;
+import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.dto.StartSurveyRequest;
 import com.voting.survey_host.entity.Choice;
-import com.voting.survey_host.dto.CreateSurveyRequest;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 import org.slf4j.Logger;
@@ -17,24 +17,13 @@ import java.util.List;
 public class SurveyServiceImpl implements SurveyService {
 
     @Autowired
-    private SurveyDao surveyDao;
+    private SurveyDaoImpl surveyDao;
 
     private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
 
     @Override
-    public void createSurvey(CreateSurveyRequest request) {
-        String username = request.getUsername();
-
-        Survey survey = new Survey(request.getUsername(), request.getTitle());
-
-        Long surveyId =  surveyDao.createSurvey(survey);
-        survey.setSurveyId(surveyId);
-
-        for(Question question: request.getQuestionList()) {
-            question.setSurveyId(surveyId);
-            Long questionId = surveyDao.addQuestion(question);
-            question.setQuestionId(questionId);
-        }
+    public long createEmptySurvey(String title) {
+        return surveyDao.createEmptySurvey(title);
     }
 
     @Override
@@ -68,20 +57,21 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public Choice addChoice(long questionId, String newChoice) {
+    public long addChoice(long questionId, String newChoice) {
         Choice choice = new Choice();
         choice.setQuestionId(questionId);
         choice.setChoice(newChoice);
-        long choiceId = surveyDao.addChoice(choice);
-        choice.setChoiceId(choiceId);
-        return choice;
+        return surveyDao.addChoice(choice);
     }
 
     @Override
-    public Question addQuestion(Question newQuestion) {
-        long questionId = surveyDao.addQuestion(newQuestion);
-        newQuestion.setQuestionId(questionId);
-        return newQuestion;
+    public long addQuestion(AddQuestionRequest newQuestion) {
+        return surveyDao.addQuestion(newQuestion);
+    }
+
+    @Override
+    public int deleteSurvey(long surveyId) {
+        return surveyDao.deleteSurvey(surveyId);
     }
 
     @Override

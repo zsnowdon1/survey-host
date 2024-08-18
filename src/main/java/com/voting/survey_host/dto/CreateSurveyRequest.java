@@ -10,12 +10,9 @@ public class CreateSurveyRequest {
 
     private String title;
 
-    private List<Question> questionList;
-
-    public CreateSurveyRequest(String username, String title, List<Question> questionList) {
+    public CreateSurveyRequest(String username, String title) {
         this.username = username;
         this.title = title;
-        this.questionList = questionList;
     }
 
     public String getUsername() {
@@ -32,13 +29,5 @@ public class CreateSurveyRequest {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public List<Question> getQuestionList() {
-        return questionList;
-    }
-
-    public void setQuestionList(List<Question> questionList) {
-        this.questionList = questionList;
     }
 }

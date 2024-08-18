@@ -1,5 +1,6 @@
 package com.voting.survey_host.dao;
 
+import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.entity.Choice;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
-public class SurveyDaoImpl implements SurveyDao{
+public class SurveyDaoImpl implements SurveyDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -30,13 +31,13 @@ public class SurveyDaoImpl implements SurveyDao{
     private static final Logger logger = LoggerFactory.getLogger(SurveyDaoImpl.class);
 
     @Override
-    public long createSurvey(Survey request) {
+    public long createEmptySurvey(String title) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(createSurveyQuery, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(1, request.getHostUsername());
-            ps.setString(2, request.getTitle());
+            ps.setString(1, "zsnowdon");
+            ps.setString(2, title);
             return ps;
         }, keyHolder);
 
@@ -44,22 +45,22 @@ public class SurveyDaoImpl implements SurveyDao{
     }
 
     @Override
-    public long addQuestion(Question question) {
+    public long addQuestion(AddQuestionRequest question) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(createQuestionQuery, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setLong(1, question.getSurveyId());
-            ps.setString(2, question.getQuestion());
+            ps.setString(2, question.getTitle());
             return ps;
         }, keyHolder);
 
-        question.setQuestionId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        long questionId = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
         jdbcTemplate.batchUpdate(createChoiceQuery, question.getChoices(), question.getChoices().size(),
                 (ps, choice) -> {
-                    ps.setLong(1, question.getQuestionId());
-                    ps.setString(2, choice.getChoice());
+                    ps.setLong(1, questionId);
+                    ps.setString(2, choice);
                 });
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
@@ -139,6 +140,15 @@ public class SurveyDaoImpl implements SurveyDao{
                 return choice;
             }
         }, questionId);
+    }
+
+    @Override
+    public int deleteSurvey(long surveyId) {
+        int deleteCount = jdbcTemplate.update(deleteChoicesBySurvey, surveyId);
+        logger.info("Deleted {} choices for survey {}", deleteCount, surveyId);
+        int questionsDeleted = jdbcTemplate.update(deleteQuestionBySurvey, surveyId);
+        logger.info("Deleted {} questions for survey {}", deleteCount, surveyId);
+        return jdbcTemplate.update(deleteSurveyQuery, surveyId);
     }
 
     @Override
