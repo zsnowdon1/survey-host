@@ -1,5 +1,6 @@
 package com.voting.survey_host.dao;
 
+import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.entity.Choice;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
@@ -8,9 +9,9 @@ import java.util.List;
 
 public interface SurveyDao {
 
-    long createSurvey(Survey request);
+    long createEmptySurvey(String title);
 
-    long createQuestion(Question request);
+    long addQuestion(AddQuestionRequest request);
 
     long addChoice(Choice choice);
 
@@ -24,5 +25,9 @@ public interface SurveyDao {
 
     List<Choice> getChoiceList(long questionId);
 
-    long deleteChoice(long choiceId);
+    int deleteSurvey(long surveyId);
+
+    int deleteChoice(long choiceId);
+
+    int deleteQuestion(long questionId);
 }
