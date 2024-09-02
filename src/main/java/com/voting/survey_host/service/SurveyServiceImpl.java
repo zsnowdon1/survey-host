@@ -4,6 +4,7 @@ import com.voting.survey_host.dao.SurveyDaoImpl;
 import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.dto.StartSurveyRequest;
 import com.voting.survey_host.entity.Choice;
+import com.voting.survey_host.entity.ChoiceMapping;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SurveyServiceImpl implements SurveyService {
@@ -54,6 +56,11 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<Choice> getChoiceList(long questionId) {
         return surveyDao.getChoiceList(questionId);
+    }
+
+    @Override
+    public List<ChoiceMapping> getChoicesBySurvey(long surveyId) {
+        return surveyDao.getChoiceMappings(surveyId);
     }
 
     @Override

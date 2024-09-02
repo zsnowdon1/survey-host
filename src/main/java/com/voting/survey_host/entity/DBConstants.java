@@ -9,6 +9,7 @@ public final class DBConstants {
     public static final String getQuestionByIdQuery = "SELECT survey_id, question FROM question WHERE question_id=?";
     public static final String getQuestionsBySurveyQuery = "SELECT question_id, question FROM question WHERE survey_id=?";
     public static final String getChoicesByQuestionQuery = "SELECT choice_id, choice FROM choice WHERE question_id=?";
+    public static final String getChoicesBySurvey = "SELECT choice_id, choice FROM choice c1 JOIN question q1 ON c1.question_id=q1.question_id WHERE q1.survey_id=?";
     public static final String deleteSurveyQuery = "DELETE FROM survey WHERE survey_id=?";
     public static final String deleteQuestionQuery = "DELETE FROM question WHERE question_id=?";
     public static final String deleteQuestionBySurvey = "DELETE FROM question where survey_id=?";

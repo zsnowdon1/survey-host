@@ -2,6 +2,7 @@ package com.voting.survey_host.dao;
 
 import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.entity.Choice;
+import com.voting.survey_host.entity.ChoiceMapping;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 import com.voting.survey_host.resultSetExtractor.SurveyResultSetExtractor;
@@ -18,9 +19,7 @@ import static com.voting.survey_host.entity.DBConstants.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Repository
 public class SurveyDaoImpl implements SurveyDao {
@@ -161,5 +160,16 @@ public class SurveyDaoImpl implements SurveyDao {
         int choicesDeleted = jdbcTemplate.update(deleteChoiceByQuestionQuery, questionId);
         logger.info("Deleted {} choices for question {}", choicesDeleted, questionId);
         return jdbcTemplate.update(deleteQuestionQuery, questionId);
+    }
+
+    @Override
+    public List<ChoiceMapping> getChoiceMappings(long surveyId) {
+        return jdbcTemplate.query(getChoicesBySurvey, new Object[]{surveyId}, rs -> {
+            List<ChoiceMapping> choiceMappings = new ArrayList<>();
+            while(rs.next()) {
+                choiceMappings.add(new ChoiceMapping(rs.getLong("choice_id"), rs.getString("choice")));
+            }
+            return choiceMappings;
+        });
     }
 }
