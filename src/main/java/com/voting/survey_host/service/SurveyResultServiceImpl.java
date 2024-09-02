@@ -1,15 +1,16 @@
 package com.voting.survey_host.service;
 
 import com.voting.survey_host.controller.LiveVoteController;
+import com.voting.survey_host.dao.SurveyDao;
+import com.voting.survey_host.entity.QuestionVotes;
+import com.voting.survey_host.entity.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class SurveyResultServiceImpl implements SurveyResultService {
@@ -20,20 +21,23 @@ public class SurveyResultServiceImpl implements SurveyResultService {
     private static final Logger logger = LoggerFactory.getLogger(SurveyResultServiceImpl.class);
 
     @Override
-    public Map<String, Map<String, Long>> getInitialResults(String surveyId) {
-        Map<String, Map<String, Long>> results = new HashMap<>();
+    public List<QuestionVotes> getInitialResults(String surveyId) {
+        List<QuestionVotes> results = new ArrayList<>();
         logger.info("Fetching survey results for survey " + surveyId);
         Set<String> questionKeys = redisTemplate.keys("survey:" + surveyId + ":question:*:results");
 
         if(questionKeys != null) {
             for(String questionKey: questionKeys) {
                 Map<Object, Object> choiceCounts = redisTemplate.opsForHash().entries(questionKey);
-                Map<String, Long> questionResult = new HashMap<>();
+                List<Vote> votes = new ArrayList<>();
                 for(Map.Entry<Object, Object> entry: choiceCounts.entrySet()) {
-                    questionResult.put((String) entry.getKey(), Long.parseLong(entry.getValue().toString()));
+                    String choiceId = entry.getKey().toString();
+                    String voteCount = entry.getValue().toString();
+                    votes.add(new Vote(Long.parseLong(choiceId), Long.parseLong(voteCount)));
                 }
+
                 String questionId = questionKey.split(":")[3];
-                results.put(questionId, questionResult);
+                results.add(new QuestionVotes(questionId, votes));
             }
         }
         return results;

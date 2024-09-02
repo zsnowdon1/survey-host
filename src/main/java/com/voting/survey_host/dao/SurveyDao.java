@@ -2,10 +2,12 @@ package com.voting.survey_host.dao;
 
 import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.entity.Choice;
+import com.voting.survey_host.entity.ChoiceMapping;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SurveyDao {
 
@@ -30,4 +32,6 @@ public interface SurveyDao {
     int deleteChoice(long choiceId);
 
     int deleteQuestion(long questionId);
+
+    List<ChoiceMapping> getChoiceMappings(long surveyId);
 }
