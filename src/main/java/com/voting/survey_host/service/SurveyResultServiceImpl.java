@@ -1,12 +1,9 @@
 package com.voting.survey_host.service;
 
-import com.voting.survey_host.controller.LiveVoteController;
-import com.voting.survey_host.dao.SurveyDao;
 import com.voting.survey_host.entity.QuestionVotes;
 import com.voting.survey_host.entity.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +12,13 @@ import java.util.*;
 @Service
 public class SurveyResultServiceImpl implements SurveyResultService {
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(SurveyResultServiceImpl.class);
+
+    public SurveyResultServiceImpl(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public List<QuestionVotes> getInitialResults(String surveyId) {

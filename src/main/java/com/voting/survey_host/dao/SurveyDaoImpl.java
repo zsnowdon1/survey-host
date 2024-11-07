@@ -8,7 +8,6 @@ import com.voting.survey_host.entity.Survey;
 import com.voting.survey_host.resultSetExtractor.SurveyResultSetExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -24,10 +23,13 @@ import java.util.*;
 @Repository
 public class SurveyDaoImpl implements SurveyDao {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(SurveyDaoImpl.class);
+
+    public SurveyDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public long createEmptySurvey(String title) {
