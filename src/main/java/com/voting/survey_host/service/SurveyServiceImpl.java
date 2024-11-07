@@ -9,19 +9,20 @@ import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class SurveyServiceImpl implements SurveyService {
 
-    @Autowired
-    private SurveyDaoImpl surveyDao;
+    private final SurveyDaoImpl surveyDao;
 
     private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
+
+    public SurveyServiceImpl(SurveyDaoImpl surveyDao) {
+        this.surveyDao = surveyDao;
+    }
 
     @Override
     public long createEmptySurvey(String title) {
