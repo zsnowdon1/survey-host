@@ -1,18 +1,21 @@
-package com.voting.survey_host.service;
+package com.voting.survey_host.service.impl;
 
-import com.voting.survey_host.dao.SurveyDaoImpl;
+import com.voting.survey_host.dao.impl.SurveyDaoImpl;
 import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.dto.StartSurveyRequest;
 import com.voting.survey_host.entity.Choice;
 import com.voting.survey_host.entity.ChoiceMapping;
 import com.voting.survey_host.entity.Question;
 import com.voting.survey_host.entity.Survey;
+import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Service
 public class SurveyServiceImpl implements SurveyService {
@@ -40,12 +43,13 @@ public class SurveyServiceImpl implements SurveyService {
 
     }
 
-
-    @Scheduled(initialDelay = 1000)
-    public void test() {
-        logger.info("Getting survey");
-        Survey survey = getSurveyById(4);
-        logger.info("Got survey ", survey.getSurveyId());
+    @Override
+    public void setSurvey(Survey survey) {
+        if(isNull(survey.getSurveyId())) {
+            Survey output = surveyDao.createSurvey(survey);
+        } else {
+            Survey output = surveyDao.setSurvey(survey);
+        }
     }
 
     @Override
@@ -71,34 +75,6 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<ChoiceMapping> getChoicesBySurvey(long surveyId) {
         return surveyDao.getChoiceMappings(surveyId);
-    }
-
-    @Override
-    public long addChoice(long questionId, String newChoice) {
-        Choice choice = new Choice();
-        choice.setQuestionId(questionId);
-        choice.setChoice(newChoice);
-        return surveyDao.addChoice(choice);
-    }
-
-    @Override
-    public long addQuestion(AddQuestionRequest newQuestion) {
-        return surveyDao.addQuestion(newQuestion);
-    }
-
-    @Override
-    public int deleteSurvey(long surveyId) {
-        return surveyDao.deleteSurvey(surveyId);
-    }
-
-    @Override
-    public int deleteChoice(long choiceId) {
-        return surveyDao.deleteChoice(choiceId);
-    }
-
-    @Override
-    public int deleteQuestion(long questionId) {
-        return surveyDao.deleteQuestion(questionId);
     }
 
 }

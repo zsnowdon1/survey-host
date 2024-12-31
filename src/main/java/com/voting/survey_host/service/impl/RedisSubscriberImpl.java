@@ -1,6 +1,7 @@
-package com.voting.survey_host.service;
+package com.voting.survey_host.service.impl;
 
 import com.voting.survey_host.controller.LiveVoteController;
+import com.voting.survey_host.service.RedisSubscriber;
 import org.springframework.stereotype.Service;
 
 @Service

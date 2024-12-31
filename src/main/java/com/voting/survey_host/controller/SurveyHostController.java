@@ -27,6 +27,16 @@ public class SurveyHostController {
         this.surveyService = surveyService;
     }
 
+    @PostMapping("/survey")
+    public ResponseEntity<String> setSurvey(@RequestBody Survey survey) {
+        try {
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return null;
+    }
+
     @PostMapping("/createSurvey")
     public ResponseEntity<Long> createEmptySurvey(@RequestBody CreateSurveyRequest survey) {
         logger.info("Received request to create new survey {}", survey.getTitle());
@@ -76,78 +86,4 @@ public class SurveyHostController {
         }
     }
 
-    @PutMapping("/addChoice")
-    public ResponseEntity<Long> addChoice(@RequestBody AddChoiceRequest addChoiceRequest) {
-        logger.info("Received add choice request for question {}", addChoiceRequest.getQuestionId());
-        try {
-            long choiceId = surveyService.addChoice(addChoiceRequest.getQuestionId(), addChoiceRequest.getNewChoice());
-            if(choiceId != -1) {
-                return new ResponseEntity<>(choiceId, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("/addQuestion")
-    public ResponseEntity<Long> addQuestion(@RequestBody AddQuestionRequest newQuestion) {
-        logger.info("Received add question request for survey {}", newQuestion.getSurveyId());
-        try {
-            long questionId = surveyService.addQuestion(newQuestion);
-            if(questionId != -1) {
-                return new ResponseEntity<>(questionId, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @DeleteMapping("/survey/{surveyId}")
-    public ResponseEntity<Long> deleteSurvey(@PathVariable("surveyId") long surveyId) {
-        logger.info("Received request to delete survey {}", surveyId);
-        try {
-            int rowsAffected = surveyService.deleteSurvey(surveyId);
-            if(rowsAffected > 0) {
-                return new ResponseEntity<>(surveyId, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/choices/{choiceId}")
-    public ResponseEntity<Long> deleteChoice(@PathVariable("choiceId") long choiceId) {
-        logger.info("Received request to delete choice {}", choiceId);
-        try {
-            int rowsAffected = surveyService.deleteChoice(choiceId);
-            if(rowsAffected > 0) {
-                return new ResponseEntity<>(choiceId, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/questions/{questionId}")
-    public ResponseEntity<Long> deleteQuestion(@PathVariable("questionId") long questionId) {
-        logger.info("Received request to delete question {}", questionId);
-        try {
-            long rowsAffected = surveyService.deleteQuestion(questionId);
-            if(rowsAffected > 0) {
-                return new ResponseEntity<>(questionId, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 }

@@ -13,9 +13,9 @@ public interface SurveyDao {
 
     long createEmptySurvey(String title);
 
-    long addQuestion(AddQuestionRequest request);
+    Survey createSurvey(Survey survey);
 
-    long addChoice(Choice choice);
+    Survey setSurvey(Survey survey);
 
     List<Survey> getSurveysByHost(String host);
 
@@ -26,12 +26,6 @@ public interface SurveyDao {
     List<Question> getQuestionList(long surveyId);
 
     List<Choice> getChoiceList(long questionId);
-
-    int deleteSurvey(long surveyId);
-
-    int deleteChoice(long choiceId);
-
-    int deleteQuestion(long questionId);
 
     List<ChoiceMapping> getChoiceMappings(long surveyId);
 }

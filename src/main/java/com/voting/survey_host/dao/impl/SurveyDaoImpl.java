@@ -1,5 +1,6 @@
-package com.voting.survey_host.dao;
+package com.voting.survey_host.dao.impl;
 
+import com.voting.survey_host.dao.SurveyDao;
 import com.voting.survey_host.dto.AddQuestionRequest;
 import com.voting.survey_host.entity.Choice;
 import com.voting.survey_host.entity.ChoiceMapping;
@@ -46,39 +47,14 @@ public class SurveyDaoImpl implements SurveyDao {
     }
 
     @Override
-    public long addQuestion(AddQuestionRequest question) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+    public Survey createSurvey(Survey survey) {
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(createQuestionQuery, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, question.getSurveyId());
-            ps.setString(2, question.getTitle());
-            return ps;
-        }, keyHolder);
-
-        long questionId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-
-        jdbcTemplate.batchUpdate(createChoiceQuery, question.getChoices(), question.getChoices().size(),
-                (ps, choice) -> {
-                    ps.setLong(1, questionId);
-                    ps.setString(2, choice);
-                });
-
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        return null;
     }
 
     @Override
-    public long addChoice(Choice request) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(createChoiceQuery, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, request.getQuestionId());
-            ps.setString(2, request.getChoice());
-            return ps;
-        }, keyHolder);
-
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    public Survey setSurvey(Survey survey) {
+        return null;
     }
 
     @Override
@@ -141,27 +117,6 @@ public class SurveyDaoImpl implements SurveyDao {
                 return choice;
             }
         }, questionId);
-    }
-
-    @Override
-    public int deleteSurvey(long surveyId) {
-        int deleteCount = jdbcTemplate.update(deleteChoicesBySurvey, surveyId);
-        logger.info("Deleted {} choices for survey {}", deleteCount, surveyId);
-        int questionsDeleted = jdbcTemplate.update(deleteQuestionBySurvey, surveyId);
-        logger.info("Deleted {} questions for survey {}", deleteCount, surveyId);
-        return jdbcTemplate.update(deleteSurveyQuery, surveyId);
-    }
-
-    @Override
-    public int deleteChoice(long choiceId) {
-        return jdbcTemplate.update(deleteChoiceQuery, choiceId);
-    }
-
-    @Override
-    public int deleteQuestion(long questionId) {
-        int choicesDeleted = jdbcTemplate.update(deleteChoiceByQuestionQuery, questionId);
-        logger.info("Deleted {} choices for question {}", choicesDeleted, questionId);
-        return jdbcTemplate.update(deleteQuestionQuery, questionId);
     }
 
     @Override

@@ -1,7 +1,8 @@
-package com.voting.survey_host.service;
+package com.voting.survey_host.service.impl;
 
 import com.voting.survey_host.entity.QuestionVotes;
 import com.voting.survey_host.entity.Vote;
+import com.voting.survey_host.service.SurveyResultService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;

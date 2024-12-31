@@ -21,6 +21,8 @@ public interface SurveyService {
 
     void startSurvey(StartSurveyRequest request);
 
+    void setSurvey(Survey survey);
+
     Survey getSurveyById(long surveyId);
 
     Question getQuestionById(long questionId);
@@ -30,15 +32,5 @@ public interface SurveyService {
     List<Choice> getChoiceList(long questionId);
 
     List<ChoiceMapping> getChoicesBySurvey(long surveyId);
-
-    long addChoice(long questionId, String newChoice);
-
-    long addQuestion(AddQuestionRequest newQuestion);
-
-    int deleteSurvey(long surveyId);
-
-    int deleteChoice(long choiceId);
-
-    int deleteQuestion(long questionId);
 
 }
