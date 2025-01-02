@@ -2,41 +2,30 @@ package com.voting.survey_host.entity;
 
 import java.util.List;
 
-public class Survey {
+public class SurveyDTO {
 
-    private Long surveyId;
+    private String surveyId;
 
     private String hostUsername;
 
     private String title;
 
-    private List<Question> questionList;
+    private List<QuestionDTO> questionList;
 
-    public Survey(Long surveyId, String hostUsername, String title, List<Question> questionList) {
+    public SurveyDTO(String surveyId, String hostUsername, String title, List<QuestionDTO> questionList) {
         this.surveyId = surveyId;
         this.hostUsername = hostUsername;
         this.title = title;
         this.questionList = questionList;
     }
 
-    public Survey(Long surveyId, String hostUsername, String title) {
-        this.surveyId = surveyId;
-        this.hostUsername = hostUsername;
-        this.title = title;
-    }
+    public SurveyDTO() { }
 
-    public Survey(String hostUsername, String title) {
-        this.hostUsername = hostUsername;
-        this.title = title;
-    }
-
-    public Survey() { }
-
-    public Long getSurveyId() {
+    public String getSurveyId() {
         return surveyId;
     }
 
-    public void setSurveyId(Long surveyId) {
+    public void setSurveyId(String surveyId) {
         this.surveyId = surveyId;
     }
 
@@ -56,11 +45,21 @@ public class Survey {
         this.title = title;
     }
 
-    public List<Question> getQuestionList() {
+    public List<QuestionDTO> getQuestionList() {
         return questionList;
     }
 
-    public void setQuestionList(List<Question> questionList) {
+    public void setQuestionList(List<QuestionDTO> questionList) {
         this.questionList = questionList;
+    }
+
+    @Override
+    public String toString() {
+        return "SurveyDTO{" +
+                "surveyId=" + surveyId +
+                ", hostUsername='" + hostUsername + '\'' +
+                ", title='" + title + '\'' +
+                ", questionList=" + questionList +
+                '}';
     }
 }
