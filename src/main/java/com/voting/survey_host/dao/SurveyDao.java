@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SurveyDao {
 
-    long createEmptySurvey(String title);
+    Long createEmptySurvey(String title);
 
 }

@@ -16,17 +16,18 @@ public class SurveyMapper {
         survey.setTitle(surveyDTO.getTitle());
         survey.setUsername(surveyDTO.getHostUsername());
         survey.setSurveyId(surveyDTO.getSurveyId());
-        if(!isNull(surveyDTO.getQuestionList()))
-            survey.setQuestions(toEntityQuestionList(surveyDTO.getQuestionList()));
+        if(!isNull(surveyDTO.getQuestions()))
+            survey.setQuestions(toEntityQuestionList(surveyDTO.getQuestions()));
         return survey;
     }
 
     public static SurveyDTO toDTOSurvey(Survey survey) {
         SurveyDTO surveyDTO = new SurveyDTO();
+        surveyDTO.setSurveyId(survey.getSurveyId());
         surveyDTO.setTitle(survey.getTitle());
         surveyDTO.setHostUsername(survey.getUsername());
         if(!isNull(survey.getQuestions()))
-            surveyDTO.setQuestionList(toDTOQuestionList(survey.getQuestions()));
+            surveyDTO.setQuestions(toDTOQuestionList(survey.getQuestions()));
         return surveyDTO;
     }
 
@@ -49,7 +50,7 @@ public class SurveyMapper {
     public static Choice toEntityChoice(ChoiceDTO choiceDTO) {
         Choice choice = new Choice();
         choice.setChoiceText(choiceDTO.getChoiceText());
-        choice.setChoiceId(choiceDTO.getChoiceId());
+        choice.setChoiceId(choiceDTO.getChoiceId() != null ? choiceDTO.getChoiceId() : null);
         return choice;
     }
 

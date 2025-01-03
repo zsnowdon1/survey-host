@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SurveyService {
 
-    String createEmptySurvey(SurveyDTO survey);
+    SurveyDTO createEmptySurvey(SurveyDTO survey);
 
     SurveyDTO setSurvey(SurveyDTO survey);
 

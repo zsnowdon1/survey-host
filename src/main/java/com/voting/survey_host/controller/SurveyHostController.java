@@ -24,24 +24,23 @@ public class SurveyHostController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createSurvey(@RequestBody SurveyDTO surveyDTO) {
-        logger.info("Received create survey request: ", surveyDTO);
+    public ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO surveyDTO) {
         try {
-            String surveyId = surveyService.createEmptySurvey(surveyDTO);
-            return new ResponseEntity<>(surveyId, HttpStatus.CREATED);
+            SurveyDTO newSurvey = surveyService.createEmptySurvey(surveyDTO);
+            return new ResponseEntity<>(newSurvey, HttpStatus.CREATED);
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/{surveyId}")
-    public ResponseEntity<SurveyDTO> setSurvey(@PathVariable Long surveyId, @RequestBody SurveyDTO surveyDTO) {
+    public ResponseEntity<SurveyDTO> setSurvey(@PathVariable String surveyId, @RequestBody SurveyDTO surveyDTO) {
         try {
             SurveyDTO output = surveyService.setSurvey(surveyDTO);
             return new ResponseEntity<>(output, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

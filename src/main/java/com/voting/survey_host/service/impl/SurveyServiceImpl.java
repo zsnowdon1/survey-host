@@ -29,10 +29,10 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public String createEmptySurvey(SurveyDTO surveyDTO) {
+    public SurveyDTO createEmptySurvey(SurveyDTO surveyDTO) {
         Survey newSurvey = SurveyMapper.toEntitySurvey(surveyDTO);
         surveyRepository.insert(newSurvey);
-        return newSurvey.getSurveyId();
+        return SurveyMapper.toDTOSurvey(newSurvey);
     }
 
     @Override

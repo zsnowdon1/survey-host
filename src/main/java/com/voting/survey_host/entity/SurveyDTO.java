@@ -10,13 +10,13 @@ public class SurveyDTO {
 
     private String title;
 
-    private List<QuestionDTO> questionList;
+    private List<QuestionDTO> questions;
 
     public SurveyDTO(String surveyId, String hostUsername, String title, List<QuestionDTO> questionList) {
         this.surveyId = surveyId;
         this.hostUsername = hostUsername;
         this.title = title;
-        this.questionList = questionList;
+        this.questions = questionList;
     }
 
     public SurveyDTO() { }
@@ -45,21 +45,21 @@ public class SurveyDTO {
         this.title = title;
     }
 
-    public List<QuestionDTO> getQuestionList() {
-        return questionList;
+    public List<QuestionDTO> getQuestions() {
+        return questions;
     }
 
-    public void setQuestionList(List<QuestionDTO> questionList) {
-        this.questionList = questionList;
+    public void setQuestions(List<QuestionDTO> questions) {
+        this.questions = questions;
     }
 
     @Override
     public String toString() {
         return "SurveyDTO{" +
-                "surveyId=" + surveyId +
+                "surveyId='" + surveyId + '\'' +
                 ", hostUsername='" + hostUsername + '\'' +
                 ", title='" + title + '\'' +
-                ", questionList=" + questionList +
+                ", questions=" + questions +
                 '}';
     }
 }

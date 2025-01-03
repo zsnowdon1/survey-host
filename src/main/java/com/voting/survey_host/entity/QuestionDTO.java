@@ -6,15 +6,12 @@ public class QuestionDTO {
 
     private Long questionId;
 
-    private Long surveyId;
-
     private String questionText;
 
     private List<ChoiceDTO> choices;
 
-    public QuestionDTO(Long questionId, Long surveyId, String questionText, List<ChoiceDTO> choices) {
+    public QuestionDTO(Long questionId, String questionText, List<ChoiceDTO> choices) {
         this.questionId = questionId;
-        this.surveyId = surveyId;
         this.questionText = questionText;
         this.choices = choices;
     }
@@ -27,14 +24,6 @@ public class QuestionDTO {
 
     public void setQuestionId(Long questionId) {
         this.questionId = questionId;
-    }
-
-    public Long getSurveyId() {
-        return surveyId;
-    }
-
-    public void setSurveyId(Long surveyId) {
-        this.surveyId = surveyId;
     }
 
     public String getQuestionText() {
@@ -57,7 +46,6 @@ public class QuestionDTO {
     public String toString() {
         return "QuestionDTO{" +
                 "questionId=" + questionId +
-                ", surveyId=" + surveyId +
                 ", questionText='" + questionText + '\'' +
                 ", choices=" + choices +
                 '}';

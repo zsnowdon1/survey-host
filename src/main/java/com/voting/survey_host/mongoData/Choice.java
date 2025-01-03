@@ -5,15 +5,15 @@ import org.springframework.data.annotation.Id;
 public class Choice {
 
     @Id
-    private long choiceId;
+    private Long choiceId;
 
     private String choiceText;
 
-    public long getChoiceId() {
+    public Long getChoiceId() {
         return choiceId;
     }
 
-    public void setChoiceId(long choiceId) {
+    public void setChoiceId(Long choiceId) {
         this.choiceId = choiceId;
     }
 

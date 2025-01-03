@@ -25,7 +25,7 @@ public class SurveyDaoImpl implements SurveyDao {
     }
 
     @Override
-    public long createEmptySurvey(String title) {
+    public Long createEmptySurvey(String title) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
