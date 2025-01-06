@@ -11,10 +11,16 @@ import static java.util.Objects.isNull;
 
 public class SurveyMapper {
 
+    public static List<SurveyDTO> toDTOSurveyList(List<Survey> surveyList) {
+        return surveyList.stream()
+                .map(SurveyMapper::toDTOSurvey)
+                .collect(Collectors.toList());
+    }
+
     public static Survey toEntitySurvey(SurveyDTO surveyDTO) {
         Survey survey = new Survey();
         survey.setTitle(surveyDTO.getTitle());
-        survey.setUsername(surveyDTO.getHostUsername());
+        survey.setHostUsername(surveyDTO.getHostUsername());
         survey.setSurveyId(surveyDTO.getSurveyId());
         if(!isNull(surveyDTO.getQuestions()))
             survey.setQuestions(toEntityQuestionList(surveyDTO.getQuestions()));
@@ -25,7 +31,7 @@ public class SurveyMapper {
         SurveyDTO surveyDTO = new SurveyDTO();
         surveyDTO.setSurveyId(survey.getSurveyId());
         surveyDTO.setTitle(survey.getTitle());
-        surveyDTO.setHostUsername(survey.getUsername());
+        surveyDTO.setHostUsername(survey.getHostUsername());
         if(!isNull(survey.getQuestions()))
             surveyDTO.setQuestions(toDTOQuestionList(survey.getQuestions()));
         return surveyDTO;

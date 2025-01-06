@@ -1,6 +1,5 @@
 package com.voting.survey_host.mongoData;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,7 +13,7 @@ public class Survey {
 
     private String title;
 
-    private String username;
+    private String hostUsername;
 
     private List<Question> questions;
 
@@ -34,12 +33,12 @@ public class Survey {
         this.title = title;
     }
 
-    public String getUsername() {
-        return username;
+    public String getHostUsername() {
+        return hostUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setHostUsername(String hostUsername) {
+        this.hostUsername = hostUsername;
     }
 
     public List<Question> getQuestions() {
@@ -53,9 +52,9 @@ public class Survey {
     @Override
     public String toString() {
         return "Survey{" +
-                "surveyId=" + surveyId +
+                "surveyId='" + surveyId + '\'' +
                 ", title='" + title + '\'' +
-                ", username='" + username + '\'' +
+                ", hostUsername='" + hostUsername + '\'' +
                 ", questions=" + questions +
                 '}';
     }

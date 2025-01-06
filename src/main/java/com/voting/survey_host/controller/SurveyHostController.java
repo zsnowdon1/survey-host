@@ -1,6 +1,7 @@
 package com.voting.survey_host.controller;
 
 import com.voting.survey_host.entity.SurveyDTO;
+import com.voting.survey_host.entity.SurveyDetailDTO;
 import com.voting.survey_host.mongoData.Survey;
 import com.voting.survey_host.service.SurveyService;
 import org.bson.types.ObjectId;
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/surveys")
@@ -39,6 +42,18 @@ public class SurveyHostController {
         try {
             SurveyDTO output = surveyService.setSurvey(surveyDTO);
             return new ResponseEntity<>(output, HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<SurveyDetailDTO>> getSurveyDetailsByHostname(@RequestParam("hostUsername") String hostUsername) {
+        try {
+            logger.info("Received getSurveyDetails request");
+            List<SurveyDetailDTO> surveys = surveyService.getSurveyDetailsByHostUsername(hostUsername);
+            return new ResponseEntity<>(surveys, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
