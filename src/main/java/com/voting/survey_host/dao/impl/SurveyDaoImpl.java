@@ -1,7 +1,6 @@
 package com.voting.survey_host.dao.impl;
 
 import com.voting.survey_host.dao.SurveyDao;
-import com.voting.survey_host.dao.SurveyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;

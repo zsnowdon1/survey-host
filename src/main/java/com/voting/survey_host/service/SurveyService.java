@@ -15,8 +15,8 @@ public interface SurveyService {
 
     SurveyDTO setSurvey(SurveyDTO survey);
 
-    List<SurveyDTO> getSurveysByHostUsername(String hostUsername);
-
     List<SurveyDetailDTO> getSurveyDetailsByHostUsername(String hostUsername);
+
+    void deleteSurvey(String surveyId);
 
 }

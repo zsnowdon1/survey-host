@@ -1,5 +1,6 @@
 package com.voting.survey_host.service.impl;
 
+import com.voting.survey_host.dao.CustomSurveyRepository;
 import com.voting.survey_host.dao.SurveyRepository;
 import com.voting.survey_host.entity.SurveyDTO;
 import com.voting.survey_host.entity.SurveyDetailDTO;
@@ -8,6 +9,7 @@ import com.voting.survey_host.mongoData.SurveyMapper;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +18,17 @@ import java.util.NoSuchElementException;
 @Service
 public class SurveyServiceImpl implements SurveyService {
 
+    private final CustomSurveyRepository customSurveyRepository;
+
     private final SurveyRepository surveyRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
 
-    public SurveyServiceImpl(SurveyRepository surveyRepository) {
+    public SurveyServiceImpl(CustomSurveyRepository customSurveyRepository,
+                             SurveyRepository surveyRepository) {
+        this.customSurveyRepository = customSurveyRepository;
         this.surveyRepository = surveyRepository;
-    }
+}
 
     @Override
     public SurveyDTO createEmptySurvey(SurveyDTO surveyDTO) {
@@ -44,14 +50,13 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public List<SurveyDTO> getSurveysByHostUsername(String hostUsername) {
-        List<Survey> surveys = surveyRepository.findByHostUsername(hostUsername);
-        return SurveyMapper.toDTOSurveyList(surveys);
+    public List<SurveyDetailDTO> getSurveyDetailsByHostUsername(String hostUsername) {
+        return customSurveyRepository.findSurveyDetailsByHostUsername(hostUsername);
     }
 
     @Override
-    public List<SurveyDetailDTO> getSurveyDetailsByHostUsername(String hostUsername) {
-        return surveyRepository.findSurveyDetailsByHostUsername(hostUsername);
+    public void deleteSurvey(String surveyId) {
+        surveyRepository.deleteById(surveyId);
     }
 
 }

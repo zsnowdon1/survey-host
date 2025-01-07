@@ -2,9 +2,7 @@ package com.voting.survey_host.controller;
 
 import com.voting.survey_host.entity.SurveyDTO;
 import com.voting.survey_host.entity.SurveyDetailDTO;
-import com.voting.survey_host.mongoData.Survey;
 import com.voting.survey_host.service.SurveyService;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -41,7 +39,7 @@ public class SurveyHostController {
     public ResponseEntity<SurveyDTO> setSurvey(@PathVariable String surveyId, @RequestBody SurveyDTO surveyDTO) {
         try {
             SurveyDTO output = surveyService.setSurvey(surveyDTO);
-            return new ResponseEntity<>(output, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(output, HttpStatus.OK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -53,7 +51,18 @@ public class SurveyHostController {
         try {
             logger.info("Received getSurveyDetails request");
             List<SurveyDetailDTO> surveys = surveyService.getSurveyDetailsByHostUsername(hostUsername);
-            return new ResponseEntity<>(surveys, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(surveys, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{surveyId}")
+    public ResponseEntity<String> deleteSurvey(@PathVariable String surveyId) {
+        try {
+            surveyService.deleteSurvey(surveyId);
+            return new ResponseEntity<>("Deleted survey: " + surveyId, HttpStatus.OK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
