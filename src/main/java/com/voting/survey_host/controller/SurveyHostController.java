@@ -62,7 +62,7 @@ public class SurveyHostController {
     public ResponseEntity<String> deleteSurvey(@PathVariable String surveyId) {
         try {
             surveyService.deleteSurvey(surveyId);
-            return new ResponseEntity<>("Deleted survey: " + surveyId, HttpStatus.OK);
+            return new ResponseEntity<>(surveyId, HttpStatus.OK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
