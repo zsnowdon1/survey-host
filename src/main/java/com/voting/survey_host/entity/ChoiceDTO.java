@@ -4,13 +4,10 @@ public class ChoiceDTO {
 
     private String choiceId;
 
-    private String questionId;
-
     private String choiceText;
 
-    public ChoiceDTO(String choiceId, String questionId, String choiceText) {
+    public ChoiceDTO(String choiceId, String choiceText) {
         this.choiceId = choiceId;
-        this.questionId = questionId;
         this.choiceText = choiceText;
     }
 
@@ -24,14 +21,6 @@ public class ChoiceDTO {
         this.choiceId = choiceId;
     }
 
-    public String getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(String questionId) {
-        this.questionId = questionId;
-    }
-
     public String getChoiceText() {
         return choiceText;
     }
@@ -43,8 +32,7 @@ public class ChoiceDTO {
     @Override
     public String toString() {
         return "ChoiceDTO{" +
-                "choiceId=" + choiceId +
-                ", questionId=" + questionId +
+                "choiceId='" + choiceId + '\'' +
                 ", choiceText='" + choiceText + '\'' +
                 '}';
     }
