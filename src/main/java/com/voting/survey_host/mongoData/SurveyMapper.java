@@ -5,6 +5,7 @@ import com.voting.survey_host.entity.QuestionDTO;
 import com.voting.survey_host.entity.SurveyDTO;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -40,6 +41,7 @@ public class SurveyMapper {
     public static Question toEntityQuestion(QuestionDTO questionDTO) {
         Question question = new Question();
         question.setQuestionText(questionDTO.getQuestionText());
+        question.setQuestionId(UUID.randomUUID().toString());
         if(!isNull(questionDTO.getChoices()))
             question.setChoices(toEntityChoiceList(questionDTO.getChoices()));
         return question;
@@ -56,7 +58,7 @@ public class SurveyMapper {
     public static Choice toEntityChoice(ChoiceDTO choiceDTO) {
         Choice choice = new Choice();
         choice.setChoiceText(choiceDTO.getChoiceText());
-        choice.setChoiceId(choiceDTO.getChoiceId() != null ? choiceDTO.getChoiceId() : null);
+        choice.setChoiceId(UUID.randomUUID().toString());
         return choice;
     }
 

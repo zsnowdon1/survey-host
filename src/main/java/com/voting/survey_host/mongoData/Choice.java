@@ -1,19 +1,16 @@
 package com.voting.survey_host.mongoData;
 
-import org.springframework.data.annotation.Id;
-
 public class Choice {
 
-    @Id
-    private Long choiceId;
+    private String choiceId;
 
     private String choiceText;
 
-    public Long getChoiceId() {
+    public String getChoiceId() {
         return choiceId;
     }
 
-    public void setChoiceId(Long choiceId) {
+    public void setChoiceId(String choiceId) {
         this.choiceId = choiceId;
     }
 

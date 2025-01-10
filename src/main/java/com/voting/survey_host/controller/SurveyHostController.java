@@ -27,7 +27,7 @@ public class SurveyHostController {
     @PostMapping()
     public ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO surveyDTO) {
         try {
-            SurveyDTO newSurvey = surveyService.createEmptySurvey(surveyDTO);
+            SurveyDTO newSurvey = surveyService.createSurvey(surveyDTO);
             return new ResponseEntity<>(newSurvey, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

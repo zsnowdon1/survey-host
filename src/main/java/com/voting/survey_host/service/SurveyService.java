@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public interface SurveyService {
 
-    SurveyDTO createEmptySurvey(SurveyDTO survey);
+    SurveyDTO createSurvey(SurveyDTO survey);
 
     SurveyDTO setSurvey(SurveyDTO survey);
 

@@ -2,13 +2,13 @@ package com.voting.survey_host.entity;
 
 public class ChoiceDTO {
 
-    private Long choiceId;
+    private String choiceId;
 
-    private Long questionId;
+    private String questionId;
 
     private String choiceText;
 
-    public ChoiceDTO(Long choiceId, Long questionId, String choiceText) {
+    public ChoiceDTO(String choiceId, String questionId, String choiceText) {
         this.choiceId = choiceId;
         this.questionId = questionId;
         this.choiceText = choiceText;
@@ -16,19 +16,19 @@ public class ChoiceDTO {
 
     public ChoiceDTO() { }
 
-    public Long getChoiceId() {
+    public String getChoiceId() {
         return choiceId;
     }
 
-    public void setChoiceId(Long choiceId) {
+    public void setChoiceId(String choiceId) {
         this.choiceId = choiceId;
     }
 
-    public Long getQuestionId() {
+    public String getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(Long questionId) {
+    public void setQuestionId(String questionId) {
         this.questionId = questionId;
     }
 
