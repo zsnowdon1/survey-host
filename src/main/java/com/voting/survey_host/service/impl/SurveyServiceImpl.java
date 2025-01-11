@@ -9,6 +9,7 @@ import com.voting.survey_host.service.SurveyService;
 import com.voting.utils.SurveyMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +22,18 @@ public class SurveyServiceImpl implements SurveyService {
 
     private final SurveyRepository surveyRepository;
 
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    private static final String SURVEY_CACHE_PREFIX = "Survey:";
+
     private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
 
     public SurveyServiceImpl(CustomSurveyRepository customSurveyRepository,
-                             SurveyRepository surveyRepository) {
+                             SurveyRepository surveyRepository,
+                             RedisTemplate<String, Object>  redisTemplate) {
         this.customSurveyRepository = customSurveyRepository;
         this.surveyRepository = surveyRepository;
+        this.redisTemplate = redisTemplate;
 }
 
     @Override
@@ -39,6 +46,10 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SurveyDTO setSurvey(SurveyDTO surveyDTO) {
         Survey newSurvey = SurveyMapper.toEntitySurvey(surveyDTO);
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(SURVEY_CACHE_PREFIX + surveyDTO.getSurveyId()))) {
+            logger.info("Deleting survey: " + surveyDTO.getSurveyId() + " from cache");
+            redisTemplate.delete(SURVEY_CACHE_PREFIX + surveyDTO.getSurveyId());
+        }
         return surveyRepository.findById(newSurvey.getSurveyId())
                 .map(existingSurvey -> {
                     newSurvey.setSurveyId(existingSurvey.getSurveyId());

@@ -1,24 +1,24 @@
-//package com.voting.survey_host.service.impl;
-//
-//import com.voting.survey_host.service.SurveyResultService;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.data.redis.core.RedisTemplate;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.*;
-//
-//@Service
-//public class SurveyResultServiceImpl implements SurveyResultService {
-//
-//    private final RedisTemplate<String, Object> redisTemplate;
-//
-//    private static final Logger logger = LoggerFactory.getLogger(SurveyResultServiceImpl.class);
-//
-//    public SurveyResultServiceImpl(RedisTemplate<String, Object> redisTemplate) {
-//        this.redisTemplate = redisTemplate;
-//    }
-//
+package com.voting.survey_host.service.impl;
+
+import com.voting.survey_host.service.SurveyResultService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class SurveyResultServiceImpl implements SurveyResultService {
+
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(SurveyResultServiceImpl.class);
+
+    public SurveyResultServiceImpl(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
 //    @Override
 //    public List<QuestionVotes> getInitialResults(String surveyId) {
 //        List<QuestionVotes> results = new ArrayList<>();
@@ -41,4 +41,4 @@
 //        }
 //        return results;
 //    }
-//}
+}
