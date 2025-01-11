@@ -1,7 +1,7 @@
 package com.voting.survey_host.dao.impl;
 
+import com.voting.entities.SurveyDetailDTO;
 import com.voting.survey_host.dao.CustomSurveyRepository;
-import com.voting.survey_host.entity.SurveyDetailDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;

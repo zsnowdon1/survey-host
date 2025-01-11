@@ -1,9 +1,7 @@
 package com.voting.survey_host.service;
 
-import com.voting.survey_host.entity.SurveyDTO;
-import com.voting.survey_host.entity.SurveyDetailDTO;
-import com.voting.survey_host.mongoData.Survey;
-import org.bson.types.ObjectId;
+import com.voting.entities.SurveyDTO;
+import com.voting.entities.SurveyDetailDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

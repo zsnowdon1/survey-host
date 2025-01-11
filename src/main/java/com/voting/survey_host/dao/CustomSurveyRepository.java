@@ -1,6 +1,6 @@
 package com.voting.survey_host.dao;
 
-import com.voting.survey_host.entity.SurveyDetailDTO;
+import com.voting.entities.SurveyDetailDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

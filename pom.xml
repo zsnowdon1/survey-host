@@ -59,6 +59,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.voting</groupId>
+			<artifactId>survey-mongo-data</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
 			<version>3.1.11</version>

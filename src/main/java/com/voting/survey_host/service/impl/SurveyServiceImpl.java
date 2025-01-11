@@ -1,12 +1,12 @@
 package com.voting.survey_host.service.impl;
 
+import com.voting.entities.SurveyDTO;
+import com.voting.entities.SurveyDetailDTO;
+import com.voting.mongoData.Survey;
 import com.voting.survey_host.dao.CustomSurveyRepository;
 import com.voting.survey_host.dao.SurveyRepository;
-import com.voting.survey_host.entity.SurveyDTO;
-import com.voting.survey_host.entity.SurveyDetailDTO;
-import com.voting.survey_host.mongoData.Survey;
-import com.voting.survey_host.mongoData.SurveyMapper;
 import com.voting.survey_host.service.SurveyService;
+import com.voting.utils.SurveyMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

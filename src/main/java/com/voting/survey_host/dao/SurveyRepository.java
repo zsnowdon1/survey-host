@@ -1,6 +1,6 @@
 package com.voting.survey_host.dao;
 
-import com.voting.survey_host.mongoData.Survey;
+import com.voting.mongoData.Survey;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
