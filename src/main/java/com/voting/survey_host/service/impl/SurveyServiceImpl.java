@@ -6,6 +6,7 @@ import com.voting.mongoData.Survey;
 import com.voting.survey_host.dao.CustomSurveyRepository;
 import com.voting.survey_host.dao.SurveyRepository;
 import com.voting.survey_host.service.SurveyService;
+import com.voting.survey_host.utils.UUIDUtil;
 import com.voting.utils.SurveyMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,39 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public void deleteSurvey(String surveyId) {
         surveyRepository.deleteById(surveyId);
+    }
+
+    @Override
+    public String toggleSurveyStatus(String surveyId, String status) {
+        logger.info("Received request to updates survey status to " + status + " for survey ID: " + surveyId);
+        if(!status.equals("LIVE") && ! status.equals("NOT-LIVE")) {
+            throw new RuntimeException("Invalid status for survey ID: " + surveyId);
+        }
+
+        Survey survey = surveyRepository.findById(surveyId)
+                .orElseThrow(() -> new RuntimeException("Survey not found for ID: " + surveyId));
+
+        if(survey.getStatus().equals(status)) {
+            throw new RuntimeException("Survey status will remain the sama");
+        }
+
+        if(status.equals("LIVE") && survey.getStatus().equals("NOT-LIVE")) {
+            String surveyHash = UUIDUtil.generateSurveyHash(survey.getTitle(), surveyId);
+            if(surveyHash == null) {
+                throw new RuntimeException("Error creating access code for survey: " + surveyId);
+            } else {
+                logger.info("Created access code " + surveyHash + " for survey " + surveyId);
+                survey.setAccessCode(surveyHash);
+            }
+        }
+
+        survey.setStatus(status);
+        surveyRepository.save(survey);
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(SURVEY_CACHE_PREFIX + surveyId))) {
+            logger.info("Deleting survey: " + surveyId + " from cache");
+            redisTemplate.delete(SURVEY_CACHE_PREFIX + surveyId);
+        }
+        return survey.getStatus();
     }
 
 }

@@ -3,6 +3,7 @@ package com.voting.survey_host.controller;
 import com.voting.entities.SurveyDTO;
 import com.voting.entities.SurveyDetailDTO;
 import com.voting.survey_host.entity.DeleteSurveyResponse;
+import com.voting.survey_host.entity.ToggleStatusResponse;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class SurveyHostController {
     @PostMapping()
     public ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO surveyDTO) {
         try {
-            surveyDTO.setStatus("LIVE");
+            surveyDTO.setStatus("NOT-LIVE");
             SurveyDTO newSurvey = surveyService.createSurvey(surveyDTO);
             return new ResponseEntity<>(newSurvey, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -37,7 +38,7 @@ public class SurveyHostController {
         }
     }
 
-    @PostMapping("/{surveyId}")
+    @PutMapping("/{surveyId}")
     public ResponseEntity<SurveyDTO> setSurvey(@PathVariable String surveyId, @RequestBody SurveyDTO surveyDTO) {
         try {
             SurveyDTO output = surveyService.setSurvey(surveyDTO);
@@ -59,6 +60,17 @@ public class SurveyHostController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/{surveyId}/status")
+    public ResponseEntity<ToggleStatusResponse> toggleSurveyStatus(@PathVariable String surveyId, @RequestParam String status) {
+        try {
+            String newStatus = surveyService.toggleSurveyStatus(surveyId, status);
+            return new ResponseEntity<>(new ToggleStatusResponse(newStatus), HttpStatus.OK);
+        } catch (Exception e) {
+            return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @DeleteMapping("/{surveyId}")
     public ResponseEntity<DeleteSurveyResponse> deleteSurvey(@PathVariable String surveyId) {

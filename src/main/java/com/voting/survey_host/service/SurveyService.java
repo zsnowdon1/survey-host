@@ -17,4 +17,6 @@ public interface SurveyService {
 
     void deleteSurvey(String surveyId);
 
+    String toggleSurveyStatus(String surveyId, String status);
+
 }
