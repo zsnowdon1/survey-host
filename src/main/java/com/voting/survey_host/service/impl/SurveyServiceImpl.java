@@ -34,7 +34,7 @@ public class SurveyServiceImpl implements SurveyService {
         this.customSurveyRepository = customSurveyRepository;
         this.surveyRepository = surveyRepository;
         this.redisTemplate = redisTemplate;
-}
+    }
 
     @Override
     public SurveyDTO createSurvey(SurveyDTO surveyDTO) {

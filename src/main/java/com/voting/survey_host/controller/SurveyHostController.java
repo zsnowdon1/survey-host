@@ -2,6 +2,7 @@ package com.voting.survey_host.controller;
 
 import com.voting.entities.SurveyDTO;
 import com.voting.entities.SurveyDetailDTO;
+import com.voting.survey_host.entity.DeleteSurveyResponse;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +61,10 @@ public class SurveyHostController {
     }
 
     @DeleteMapping("/{surveyId}")
-    public ResponseEntity<String> deleteSurvey(@PathVariable String surveyId) {
+    public ResponseEntity<DeleteSurveyResponse> deleteSurvey(@PathVariable String surveyId) {
         try {
             surveyService.deleteSurvey(surveyId);
-            return new ResponseEntity<>(surveyId, HttpStatus.OK);
+            return new ResponseEntity<>(new DeleteSurveyResponse(surveyId), HttpStatus.OK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
