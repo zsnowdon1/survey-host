@@ -28,7 +28,7 @@ public class SurveyDaoImpl implements SurveyDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(createSurveyQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(CREATE_SURVEY_QUERY, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, "zsnowdon");
             ps.setString(2, title);
             return ps;
