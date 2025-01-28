@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/surveys")
-@CrossOrigin(origins = "http:/localhost:3000")
+@CrossOrigin
 public class LiveVoteController {
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
@@ -32,59 +32,53 @@ public class LiveVoteController {
         this.surveyService = surveyService;
     }
 
-//    @GetMapping("/{surveyId}/results")
-//    public ResponseEntity<List<QuestionVotes>> getSurveyResults(@PathVariable("surveyId") String surveyId) {
-//        logger.info("Fetching survey results for survey " + surveyId);
-//        List<QuestionVotes> results = surveyResultService.getInitialResults(surveyId);
-//        logger.info("Received results " + results.size());
-//        return new ResponseEntity<>(results, HttpStatus.OK);
-//    }
-//
-//    @GetMapping(value = "/{surveyId}/liveResults", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public SseEmitter getLiveResults(@PathVariable("surveyId") String surveyId) {
-//        SseEmitter emitter = new SseEmitter();
-//        emitters.put(surveyId, emitter);
-//
-//        emitter.onCompletion(() -> emitters.remove(surveyId));
-//        emitter.onError((e) -> emitters.remove(surveyId));
-//        emitter.onTimeout(() -> emitters.remove(surveyId));
-//
-//        sendInitialData(emitter, surveyId);
-//
-//        return emitter;
-//    }
-//
-//    @GetMapping("/{surveyId}/choices")
-//    public ResponseEntity<List<ChoiceMapping>> getChoiceMappings(@PathVariable("surveyId") long surveyId) {
-//        logger.info("Received get choice mappings for survey " + surveyId);
-//        try {
-//            List<ChoiceMapping> choiceMap = surveyService.getChoicesBySurvey(surveyId);
-//            return new ResponseEntity<>(choiceMap, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    private void sendInitialData(SseEmitter emitter, String surveyId) {
-//        try {
-//            List<QuestionVotes> results = surveyResultService.getInitialResults(surveyId);
-//            emitter.send(SseEmitter.event().name("initial-data").data(results));
-//        } catch (Exception e) {
-//            emitter.completeWithError(e);
-//            logger.info("Error sending initial results for surveyId: " + surveyId);
-//        }
-//    }
-//
-//    public void sendVoteUpdate(String voteData) {
-//        logger.info("Sending voteData " + voteData);
-//        emitters.forEach((clientId, emitter) -> {
-//            try {
-//                emitter.send(SseEmitter.event().name("vote-update").data(voteData));
-//            } catch (Exception e) {
-//                logger.error("Failed emitting voteData " + voteData);
-//                emitters.remove(clientId);
-//            }
-//        });
-//    }
+    /**
+     * Retrieves live survey results from redis
+     * @param surveyId String: id of survey
+     * @return key1 = question ID, key2 = choice ID, value1 = vote count
+     */
+    @GetMapping("/{surveyId}/results")
+    public ResponseEntity<Map<String, Map<String, Long>>> getSurveyResults(@PathVariable("surveyId") String surveyId) {
+        logger.info("Fetching survey results for survey " + surveyId);
+        Map<String, Map<String, Long>> results = surveyResultService.getInitialResults(surveyId);
+        logger.info("Received results " + results.size());
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{surveyId}/liveResults", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter getLiveResults(@PathVariable("surveyId") String surveyId) {
+        SseEmitter emitter = new SseEmitter();
+        emitters.put(surveyId, emitter);
+
+        emitter.onCompletion(() -> emitters.remove(surveyId));
+        emitter.onError((e) -> emitters.remove(surveyId));
+        emitter.onTimeout(() -> emitters.remove(surveyId));
+
+        sendInitialData(emitter, surveyId);
+
+        return emitter;
+    }
+
+    private void sendInitialData(SseEmitter emitter, String surveyId) {
+        try {
+            Map<String, Map<String, Long>> results = surveyResultService.getInitialResults(surveyId);
+            emitter.send(SseEmitter.event().name("initial-data").data(results));
+        } catch (Exception e) {
+            emitter.completeWithError(e);
+            logger.info("Error sending initial results for surveyId: " + surveyId);
+        }
+    }
+
+    public void sendVoteUpdate(String voteData) {
+        logger.info("Sending voteData " + voteData);
+        emitters.forEach((clientId, emitter) -> {
+            try {
+                emitter.send(SseEmitter.event().name("vote-update").data(voteData));
+            } catch (Exception e) {
+                logger.error("Failed emitting voteData " + voteData);
+                emitters.remove(clientId);
+            }
+        });
+    }
 
 }

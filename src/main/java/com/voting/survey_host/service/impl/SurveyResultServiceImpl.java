@@ -19,26 +19,26 @@ public class SurveyResultServiceImpl implements SurveyResultService {
         this.redisTemplate = redisTemplate;
     }
 
-//    @Override
-//    public List<QuestionVotes> getInitialResults(String surveyId) {
-//        List<QuestionVotes> results = new ArrayList<>();
-//        logger.info("Fetching survey results for survey " + surveyId);
-//        Set<String> questionKeys = redisTemplate.keys("survey:" + surveyId + ":question:*:results");
-//
-//        if(questionKeys != null) {
-//            for(String questionKey: questionKeys) {
-//                Map<Object, Object> choiceCounts = redisTemplate.opsForHash().entries(questionKey);
-//                List<Vote> votes = new ArrayList<>();
-//                for(Map.Entry<Object, Object> entry: choiceCounts.entrySet()) {
-//                    String choiceId = entry.getKey().toString();
-//                    String voteCount = entry.getValue().toString();
-//                    votes.add(new Vote(Long.parseLong(choiceId), Long.parseLong(voteCount)));
-//                }
-//
-//                String questionId = questionKey.split(":")[3];
-//                results.add(new QuestionVotes(questionId, votes));
-//            }
-//        }
-//        return results;
-//    }
+    @Override
+    public Map<String, Map<String, Long>> getInitialResults(String surveyId) {
+        Map<String, Map<String, Long>> results = new HashMap<>();
+        logger.info("Fetching survey results for survey " + surveyId);
+        Set<String> questionKeys = redisTemplate.keys("survey:" + surveyId + ":question:*:results");
+
+        if(questionKeys != null) {
+            for(String questionKey: questionKeys) {
+                Map<Object, Object> choiceCounts = redisTemplate.opsForHash().entries(questionKey);
+                Map<String, Long> votes = new HashMap<>();
+                for(Map.Entry<Object, Object> entry: choiceCounts.entrySet()) {
+                    String choiceId = entry.getKey().toString();
+                    String voteCount = entry.getValue().toString();
+                    votes.put(choiceId, Long.parseLong(voteCount));
+                }
+
+                String questionId = questionKey.split(":")[3];
+                results.put(questionId, votes);
+            }
+        }
+        return results;
+    }
 }
