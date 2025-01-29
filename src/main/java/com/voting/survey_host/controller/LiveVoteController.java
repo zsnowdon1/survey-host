@@ -9,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,7 +31,7 @@ public class LiveVoteController {
     }
 
     /**
-     * Retrieves live survey results from redis
+     * Retrieves JSON format survey results from redis
      * @param surveyId String: id of survey
      * @return key1 = question ID, key2 = choice ID, value1 = vote count
      */
@@ -45,7 +43,12 @@ public class LiveVoteController {
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{surveyId}/liveResults", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    /**
+     * Creates SseEmitter with live vote results and updates
+     * @param surveyId
+     * @return
+     */
+    @GetMapping(value = "/live/{surveyId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter getLiveResults(@PathVariable("surveyId") String surveyId) {
         SseEmitter emitter = new SseEmitter();
         emitters.put(surveyId, emitter);

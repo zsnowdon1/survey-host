@@ -49,6 +49,17 @@ public class SurveyHostController {
         }
     }
 
+    @GetMapping("/{surveyId}")
+    public ResponseEntity<SurveyDTO> getSurvey(@PathVariable String surveyId) {
+        try {
+            SurveyDTO survey = surveyService.getSurvey(surveyId);
+            return new ResponseEntity<>(survey, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping()
     public ResponseEntity<List<SurveyDetailDTO>> getSurveyDetailsByHostname(@RequestParam("hostUsername") String hostUsername) {
         try {

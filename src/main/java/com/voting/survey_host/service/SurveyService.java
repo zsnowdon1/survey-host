@@ -13,6 +13,8 @@ public interface SurveyService {
 
     SurveyDTO setSurvey(SurveyDTO survey);
 
+    SurveyDTO getSurvey(String surveyId);
+
     List<SurveyDetailDTO> getSurveyDetailsByHostUsername(String hostUsername);
 
     void deleteSurvey(String surveyId);

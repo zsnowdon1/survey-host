@@ -64,6 +64,12 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    public SurveyDTO getSurvey(String surveyId) {
+        return surveyRepository.findById(surveyId)
+                .map(SurveyMapper::toDTOSurvey).orElseThrow(() -> new NoSuchElementException("Couldn't find survey"));
+    }
+
+    @Override
     public List<SurveyDetailDTO> getSurveyDetailsByHostUsername(String hostUsername) {
         return customSurveyRepository.findSurveyDetailsByHostUsername(hostUsername);
     }
