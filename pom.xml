@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.voting</groupId>
 	<artifactId>survey-host</artifactId>
@@ -26,6 +26,17 @@
 		<tag/>
 		<url/>
 	</scm>
+
+	<repositories>
+		<repository>
+			<id>GitHub Packages</id>
+			<url>https://maven.pkg.github.com/zsnowdon1/survey-mongo-data</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
