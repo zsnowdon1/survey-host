@@ -29,7 +29,7 @@
 
 	<repositories>
 		<repository>
-			<id>GitHub Packages</id>
+			<id>github</id>
 			<url>https://maven.pkg.github.com/zsnowdon1/survey-mongo-data</url>
 			<snapshots>
 				<enabled>true</enabled>
