@@ -20,6 +20,8 @@ FROM openjdk:17-jdk-slim
 # Set the working directory inside the container
 WORKDIR /app
 
+RUN pwd
+
 # Copy the executable JAR file from the host to the container
 COPY target/survey-host-0.0.1-SNAPSHOT.jar /app/host-service.jar
 
