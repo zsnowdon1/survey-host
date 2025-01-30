@@ -25,6 +25,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Auth to Github Actions
+        run: echo "machine maven.pkg.github.com login USERNAME password ${{ secrets.GITHUB_TOKEN }}" > ~./netrc
+
       - name: Maven setup
         run: |
             mkdir -p ~/.m2
