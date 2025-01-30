@@ -23,7 +23,7 @@ WORKDIR /app
 RUN pwd
 
 # Copy the executable JAR file from the host to the container
-COPY target/survey-host-0.0.1-SNAPSHOT.jar /app/host-service.jar
+COPY survey-host-0.0.1-SNAPSHOT.jar /app/host-service.jar
 
 # Expose the port that the service will run on
 EXPOSE 8081
