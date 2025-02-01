@@ -15,16 +15,14 @@ spring:
 
   redis:
     #    host: redis
-    host: localhost
+#    host: localhost
+    host: redis-service
     port: 6379
 
   data:
     mongodb:
-      #      Change to localhost:27017 for local and mongodb:27017 for docker
-      uri: mongodb://root:password@localhost:27017/
-      #      uri: mongodb://root:password@localhost:27017/
-      username: root
-      password: password
+      host: mongo-service
+      port: 27017
       database: surveyDB
 
 ## LOGGING
