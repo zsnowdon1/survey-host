@@ -6,7 +6,7 @@ spring:
     name: host-service
   config:
     activate:
-      on-profile: local
+      on-profile: default
 
   datasource:
     url: jdbc:postgresql://localhost:5432/voting
