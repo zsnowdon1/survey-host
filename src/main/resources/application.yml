@@ -16,13 +16,12 @@ spring:
   redis:
     #    host: redis
 #    host: localhost
-    host: redis-service
+    host: localhost
     port: 6379
 
   data:
     mongodb:
-      host: mongo-service
-      port: 27017
+      uri: mongodb://mongo-service.default.svc.cluster.local:27017/
       database: surveyDB
 
 ## LOGGING
