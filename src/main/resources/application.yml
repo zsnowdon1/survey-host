@@ -21,7 +21,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://mongo-service.default.svc.cluster.local:27017/
+      uri: mongodb://mongo-service.databases.svc.cluster.local:27017/
       database: surveyDB
 
 ## LOGGING
