@@ -14,9 +14,7 @@ spring:
     password: password
 
   redis:
-    #    host: redis
-#    host: localhost
-    host: localhost
+    host: redis-service.databases.svc.cluster.local
     port: 6379
 
   data:
