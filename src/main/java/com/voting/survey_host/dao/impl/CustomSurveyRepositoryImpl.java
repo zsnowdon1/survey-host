@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -27,7 +28,9 @@ public class CustomSurveyRepositoryImpl implements CustomSurveyRepository {
         logger.info("Looking for survey data");
         MatchOperation matchStage = Aggregation.match(new Criteria("hostUsername").is(hostUsername));
         ProjectionOperation projectStage = Aggregation.project("title", "surveyId", "questions", "status")
-                .and(ArrayOperators.Size.lengthOfArray("questions")).as("questionCount");
+                .and(ArrayOperators.Size.lengthOfArray(
+                        ConditionalOperators.ifNull("questions").then(Collections.emptyList())
+                )).as("questionCount");
 
         Aggregation aggregation = Aggregation.newAggregation(matchStage, projectStage);
         AggregationResults<SurveyDetailDTO> results = mongoTemplate.aggregate(aggregation, "surveys", SurveyDetailDTO.class);
