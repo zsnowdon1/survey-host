@@ -9,4 +9,5 @@ import lombok.*;
 @Setter
 public class ToggleStatusResponse {
     private String newStatus;
+    private String accessCode;
 }

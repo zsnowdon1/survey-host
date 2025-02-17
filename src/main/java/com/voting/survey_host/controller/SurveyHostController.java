@@ -75,8 +75,8 @@ public class SurveyHostController {
     @PutMapping("/{surveyId}/status")
     public ResponseEntity<ToggleStatusResponse> toggleSurveyStatus(@PathVariable String surveyId, @RequestParam String status) {
         try {
-            String newStatus = surveyService.toggleSurveyStatus(surveyId, status);
-            return new ResponseEntity<>(new ToggleStatusResponse(newStatus), HttpStatus.OK);
+            ToggleStatusResponse response = surveyService.toggleSurveyStatus(surveyId, status);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

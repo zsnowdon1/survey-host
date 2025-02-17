@@ -2,6 +2,7 @@ package com.voting.survey_host.service;
 
 import com.voting.entities.SurveyDTO;
 import com.voting.entities.SurveyDetailDTO;
+import com.voting.survey_host.entity.ToggleStatusResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,6 @@ public interface SurveyService {
 
     void deleteSurvey(String surveyId);
 
-    String toggleSurveyStatus(String surveyId, String status);
+    ToggleStatusResponse toggleSurveyStatus(String surveyId, String status);
 
 }

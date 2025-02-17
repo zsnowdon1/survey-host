@@ -5,6 +5,7 @@ import com.voting.entities.SurveyDetailDTO;
 import com.voting.mongoData.Survey;
 import com.voting.survey_host.dao.CustomSurveyRepository;
 import com.voting.survey_host.dao.SurveyRepository;
+import com.voting.survey_host.entity.ToggleStatusResponse;
 import com.voting.survey_host.service.SurveyService;
 import com.voting.survey_host.utils.UUIDUtil;
 import com.voting.utils.SurveyMapper;
@@ -80,7 +81,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public String toggleSurveyStatus(String surveyId, String status) {
+    public ToggleStatusResponse toggleSurveyStatus(String surveyId, String status) {
         logger.info("Received request to updates survey status to " + status + " for survey ID: " + surveyId);
         if(!status.equals(LIVE) && ! status.equals(NOT_LIVE)) {
             throw new RuntimeException("Invalid status for survey ID: " + surveyId);
@@ -112,7 +113,7 @@ public class SurveyServiceImpl implements SurveyService {
         }
 
         surveyRepository.save(survey);
-        return survey.getStatus();
+        return new ToggleStatusResponse(survey.getStatus(), survey.getAccessCode());
     }
 
 }
