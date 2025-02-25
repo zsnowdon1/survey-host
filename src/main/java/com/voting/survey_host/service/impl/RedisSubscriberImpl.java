@@ -21,6 +21,6 @@ public class RedisSubscriberImpl implements RedisSubscriber {
     @Override
     public void onMessage(String message) {
         logger.info("Sending kafka message: " + message);
-//        liveVoteController.sendVoteUpdate(message);
+        liveVoteController.sendVoteUpdate(message);
     }
 }
