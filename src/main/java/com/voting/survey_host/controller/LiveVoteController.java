@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping("/surveys")
+@RequestMapping("/api/host/surveys")
 @CrossOrigin
 public class LiveVoteController {
 
