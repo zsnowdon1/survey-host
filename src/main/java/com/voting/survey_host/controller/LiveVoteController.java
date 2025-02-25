@@ -1,5 +1,6 @@
 package com.voting.survey_host.controller;
 
+import com.voting.survey_host.entity.GetSurveyResultsResponse;
 import com.voting.survey_host.service.SurveyResultService;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
@@ -9,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,9 +39,9 @@ public class LiveVoteController {
      * @return key1 = question ID, key2 = choice ID, value1 = vote count
      */
     @GetMapping("/{surveyId}/results")
-    public ResponseEntity<Map<String, Map<String, Long>>> getSurveyResults(@PathVariable("surveyId") String surveyId) {
+    public ResponseEntity<List<GetSurveyResultsResponse>> getSurveyResults(@PathVariable("surveyId") String surveyId) {
         logger.info("Fetching survey results for survey " + surveyId);
-        Map<String, Map<String, Long>> results = surveyResultService.getInitialResults(surveyId);
+        List<GetSurveyResultsResponse> results = surveyResultService.getInitialResults(surveyId);
         logger.info("Received results " + results.size());
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
@@ -64,7 +67,7 @@ public class LiveVoteController {
 
     private void sendInitialData(SseEmitter emitter, String surveyId) {
         try {
-            Map<String, Map<String, Long>> results = surveyResultService.getInitialResults(surveyId);
+            List<GetSurveyResultsResponse> results = surveyResultService.getInitialResults(surveyId);
             emitter.send(SseEmitter.event().name("initial-data").data(results));
         } catch (Exception e) {
             emitter.completeWithError(e);

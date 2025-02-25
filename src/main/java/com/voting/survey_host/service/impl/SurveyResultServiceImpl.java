@@ -1,5 +1,6 @@
 package com.voting.survey_host.service.impl;
 
+import com.voting.survey_host.entity.GetSurveyResultsResponse;
 import com.voting.survey_host.service.SurveyResultService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,8 @@ public class SurveyResultServiceImpl implements SurveyResultService {
     }
 
     @Override
-    public Map<String, Map<String, Long>> getInitialResults(String surveyId) {
-        Map<String, Map<String, Long>> results = new HashMap<>();
+    public List<GetSurveyResultsResponse> getInitialResults(String surveyId) {
+        List<GetSurveyResultsResponse> results = new ArrayList<>();
         logger.info("Fetching survey results for survey " + surveyId);
         Set<String> questionKeys = redisTemplate.keys("survey:" + surveyId + ":question:*:results");
 
@@ -36,7 +37,7 @@ public class SurveyResultServiceImpl implements SurveyResultService {
                 }
 
                 String questionId = questionKey.split(":")[3];
-                results.put(questionId, votes);
+                results.add(new GetSurveyResultsResponse(questionId, votes));
             }
         }
         return results;
