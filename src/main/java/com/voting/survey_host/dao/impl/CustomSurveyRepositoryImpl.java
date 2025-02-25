@@ -27,7 +27,7 @@ public class CustomSurveyRepositoryImpl implements CustomSurveyRepository {
     public List<SurveyDetailDTO> findSurveyDetailsByHostUsername(String hostUsername) {
         logger.info("Looking for survey data");
         MatchOperation matchStage = Aggregation.match(new Criteria("hostUsername").is(hostUsername));
-        ProjectionOperation projectStage = Aggregation.project("title", "surveyId", "questions", "status")
+        ProjectionOperation projectStage = Aggregation.project("title", "surveyId", "questions", "status", "accessCode")
                 .and(ArrayOperators.Size.lengthOfArray(
                         ConditionalOperators.ifNull("questions").then(Collections.emptyList())
                 )).as("questionCount");
