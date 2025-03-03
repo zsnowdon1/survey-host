@@ -10,6 +10,9 @@ spring:
   config:
     activate:
       on-profile: default
+  mvc:
+    async:
+      request-timeout: -1
 
   datasource:
     url: jdbc:postgresql://localhost:5432/voting
