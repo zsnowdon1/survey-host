@@ -10,7 +10,5 @@ import java.util.Map;
 @Getter
 @Setter
 public class GetSurveyResultsResponse {
-
-    private String questionId;
-    private Map<String, Long> choices;
+    private Map<String, Map<String, Long>> resultMap;
 }

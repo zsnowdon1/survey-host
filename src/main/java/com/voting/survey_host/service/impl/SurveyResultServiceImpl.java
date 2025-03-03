@@ -21,8 +21,8 @@ public class SurveyResultServiceImpl implements SurveyResultService {
     }
 
     @Override
-    public List<GetSurveyResultsResponse> getInitialResults(String surveyId) {
-        List<GetSurveyResultsResponse> results = new ArrayList<>();
+    public Map<String, Map<String, Long>> getInitialResults(String surveyId) {
+        Map<String, Map<String, Long>> results = new HashMap<>();
         logger.info("Fetching survey results for survey " + surveyId);
         Set<String> questionKeys = redisTemplate.keys("survey:" + surveyId + ":question:*:results");
 
@@ -35,9 +35,8 @@ public class SurveyResultServiceImpl implements SurveyResultService {
                     String voteCount = entry.getValue().toString();
                     votes.put(choiceId, Long.parseLong(voteCount));
                 }
-
                 String questionId = questionKey.split(":")[3];
-                results.add(new GetSurveyResultsResponse(questionId, votes));
+                results.put(questionId, votes);
             }
         }
         return results;

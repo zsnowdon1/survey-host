@@ -39,11 +39,12 @@ public class LiveVoteController {
      * @return key1 = question ID, key2 = choice ID, value1 = vote count
      */
     @GetMapping("/{surveyId}/results")
-    public ResponseEntity<List<GetSurveyResultsResponse>> getSurveyResults(@PathVariable("surveyId") String surveyId) {
+    public ResponseEntity<GetSurveyResultsResponse> getSurveyResults(@PathVariable("surveyId") String surveyId) {
         logger.info("Fetching survey results for survey " + surveyId);
-        List<GetSurveyResultsResponse> results = surveyResultService.getInitialResults(surveyId);
+        Map<String, Map<String, Long>> results = surveyResultService.getInitialResults(surveyId);
+        GetSurveyResultsResponse output = new GetSurveyResultsResponse(results);
         logger.info("Received results " + results.size());
-        return new ResponseEntity<>(results, HttpStatus.OK);
+        return new ResponseEntity<>(output, HttpStatus.OK);
     }
 
     /**
@@ -67,8 +68,9 @@ public class LiveVoteController {
 
     private void sendInitialData(SseEmitter emitter, String surveyId) {
         try {
-            List<GetSurveyResultsResponse> results = surveyResultService.getInitialResults(surveyId);
-            emitter.send(SseEmitter.event().name("initial-data").data(results));
+            Map<String, Map<String, Long>> result = surveyResultService.getInitialResults(surveyId);
+            GetSurveyResultsResponse output = new GetSurveyResultsResponse(result);
+            emitter.send(SseEmitter.event().name("initial-data").data(output));
         } catch (Exception e) {
             emitter.completeWithError(e);
             logger.info("Error sending initial results for surveyId: " + surveyId);

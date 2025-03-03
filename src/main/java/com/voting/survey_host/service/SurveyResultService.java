@@ -9,5 +9,5 @@ import java.util.Map;
 @Service
 public interface SurveyResultService {
 
-    List<GetSurveyResultsResponse> getInitialResults(String surveyId);
+    Map<String, Map<String, Long>> getInitialResults(String surveyId);
 }
