@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/host/surveys")
-@CrossOrigin
 public class SurveyHostControllerImpl implements SurveyHostController {
 
     private final SurveyService surveyService;
@@ -27,7 +25,6 @@ public class SurveyHostControllerImpl implements SurveyHostController {
         this.surveyService = surveyService;
     }
 
-    @PostMapping()
     public ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO surveyDTO) {
         try {
             surveyDTO.setStatus("NOT-LIVE");
@@ -39,7 +36,6 @@ public class SurveyHostControllerImpl implements SurveyHostController {
         }
     }
 
-    @PutMapping("/{surveyId}")
     public ResponseEntity<SurveyDTO> setSurvey(@PathVariable String surveyId, @RequestBody SurveyDTO surveyDTO) {
         try {
             SurveyDTO output = surveyService.setSurvey(surveyDTO);
@@ -50,7 +46,6 @@ public class SurveyHostControllerImpl implements SurveyHostController {
         }
     }
 
-    @GetMapping("/{surveyId}")
     public ResponseEntity<SurveyDTO> getSurvey(@PathVariable String surveyId) {
         try {
             SurveyDTO survey = surveyService.getSurvey(surveyId);
@@ -61,7 +56,6 @@ public class SurveyHostControllerImpl implements SurveyHostController {
         }
     }
 
-    @GetMapping()
     public ResponseEntity<List<SurveyDetailDTO>> getSurveyDetailsByHostname(@RequestParam("hostUsername") String hostUsername) {
         try {
             logger.info("Received getSurveyDetails request");
@@ -73,7 +67,6 @@ public class SurveyHostControllerImpl implements SurveyHostController {
         }
     }
 
-    @PutMapping("/{surveyId}/status")
     public ResponseEntity<ToggleStatusResponse> toggleSurveyStatus(@PathVariable String surveyId, @RequestParam String status) {
         try {
             ToggleStatusResponse response = surveyService.toggleSurveyStatus(surveyId, status);
@@ -83,8 +76,6 @@ public class SurveyHostControllerImpl implements SurveyHostController {
         }
     }
 
-
-    @DeleteMapping("/{surveyId}")
     public ResponseEntity<DeleteSurveyResponse> deleteSurvey(@PathVariable String surveyId) {
         try {
             surveyService.deleteSurvey(surveyId);

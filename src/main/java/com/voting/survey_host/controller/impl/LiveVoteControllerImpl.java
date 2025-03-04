@@ -6,18 +6,14 @@ import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping("/api/host/surveys")
-@CrossOrigin
 public class LiveVoteControllerImpl {
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
@@ -38,7 +34,6 @@ public class LiveVoteControllerImpl {
      * @param surveyId String: id of survey
      * @return key1 = question ID, key2 = choice ID, value1 = vote count
      */
-    @GetMapping("/{surveyId}/results")
     public ResponseEntity<GetSurveyResultsResponse> getSurveyResults(@PathVariable("surveyId") String surveyId) {
         logger.info("Fetching survey results for survey " + surveyId);
         Map<String, Map<String, Long>> results = surveyResultService.getInitialResults(surveyId);
@@ -47,12 +42,6 @@ public class LiveVoteControllerImpl {
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 
-    /**
-     * Creates SseEmitter with live vote results and updates
-     * @param surveyId
-     * @return
-     */
-    @GetMapping(value = "/live/{surveyId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter getLiveResults(@PathVariable("surveyId") String surveyId) {
         SseEmitter emitter = new SseEmitter();
         emitters.put(surveyId, emitter);

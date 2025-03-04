@@ -14,7 +14,6 @@ import java.util.List;
 @CrossOrigin
 public interface SurveyHostController {
 
-
     @PostMapping()
     ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO surveyDTO);
 
@@ -29,7 +28,6 @@ public interface SurveyHostController {
 
     @PutMapping("/{surveyId}/status")
     ResponseEntity<ToggleStatusResponse> toggleSurveyStatus(@PathVariable String surveyId, @RequestParam String status);
-
 
     @DeleteMapping("/{surveyId}")
     ResponseEntity<DeleteSurveyResponse> deleteSurvey(@PathVariable String surveyId);
