@@ -1,5 +1,6 @@
 package com.voting.survey_host.controller.impl;
 
+import com.voting.survey_host.controller.LiveVoteController;
 import com.voting.survey_host.entity.GetSurveyResultsResponse;
 import com.voting.survey_host.service.SurveyResultService;
 import com.voting.survey_host.service.SurveyService;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-public class LiveVoteControllerImpl {
+public class LiveVoteControllerImpl implements LiveVoteController {
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
