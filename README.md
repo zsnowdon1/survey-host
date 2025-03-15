@@ -1,14 +1,7 @@
 # Survey Host Service
 
 ## Overview
-The Survey Host Service is a backend service responsible for managing surveys within the Voting App. It provides endpoints to create, retrieve, update, delete, and toggle the status of surveys.
-
-## Technologies Used
-- **Spring Boot** (REST API)
-- **PostgreSQL** (Database)
-- **Spring Data JPA** (Database interaction)
-- **SLF4J & Logback** (Logging)
-- **CORS Enabled** for cross-origin requests
+The Survey Host Service is a backend service responsible for managing surveys within the Voting App.
 
 ## API Endpoints
 ### Base URL: `/api/host/surveys`
@@ -22,13 +15,27 @@ The Survey Host Service is a backend service responsible for managing surveys wi
 #### 2. Retrieve Surveys
 **Endpoint:** `GET /api/host/surveys`
 - **Response:** `List<SurveyDTO>`
-- **Description:** Fetches all surveys.
+- **Description:** Retrieves all surveys.
 
-#### 3. Get Survey Details
-**Endpoint:** `GET /api/host/surveys/{id}`
-- **Response:** `SurveyDetailDTO`
-- **Description:** Retrieves details of a specific survey.
+#### 3. Toggle Survey Status
+**Endpoint:** `PUT /api/host/surveys/{surveyId}/toggle`
+- **Response:** `ToggleStatusResponse`
+- **Description:** Toggles the status of a survey between active and inactive.
 
 #### 4. Delete a Survey
-**Endpoint:** `DELETE /api/host/surveys/{id}`
-- **Response:** `DeleteSurveyRespons
+**Endpoint:** `DELETE /api/host/surveys/{surveyId}`
+- **Response:** `DeleteSurveyResponse`
+- **Description:** Deletes a specific survey.
+
+## Live Vote Tracking
+### Base URL: `/api/host/surveys/live`
+
+#### 1. Subscribe to Live Vote Updates
+**Endpoint:** `GET /api/host/surveys/live/{surveyId}`
+- **Response:** `SSE Stream`
+- **Description:** Establishes a connection for real-time vote updates using Server-Sent Events (SSE).
+
+#### 2. Retrieve Live Survey Results
+**Endpoint:** `GET /api/host/surveys/{surveyId}/results`
+- **Response:** `GetSurveyResultsResponse`
+- **Description:** Retrieves the latest results for a given survey.
