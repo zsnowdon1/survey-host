@@ -1,4 +1,4 @@
-package com.voting.survey_host.controller.impl;
+package com.voting.survey_host.controller;
 
 import com.voting.entities.SurveyDTO;
 import com.voting.entities.SurveyDetailDTO;

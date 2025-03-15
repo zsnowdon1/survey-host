@@ -1,6 +1,5 @@
 package com.voting.survey_host.controller;
 
-import com.voting.survey_host.controller.LiveVoteController;
 import com.voting.survey_host.entity.GetSurveyResultsResponse;
 import com.voting.survey_host.service.SurveyResultService;
 import com.voting.survey_host.service.SurveyService;
