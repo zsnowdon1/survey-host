@@ -26,6 +26,11 @@ public class SurveyHostController {
         this.surveyService = surveyService;
     }
 
+    /**
+     * Allows host to post survey details to create a new survey
+     * @param surveyDTO Survey details that the host just created
+     * @return SurveyDTO The new surveydto which was added to mongodb
+     */
     @PostMapping()
     public ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO surveyDTO) {
         try {
@@ -38,6 +43,12 @@ public class SurveyHostController {
         }
     }
 
+    /**
+     * Endpoint that allows a host to post a survey which updates the existing survey in mongodb
+     * @param surveyId SurveyId of the survey being updated
+     * @param surveyDTO Updated survey DTO
+     * @return surveyDTO The survey details which have been updated to mongodb
+     */
     @PutMapping("/{surveyId}")
     public ResponseEntity<SurveyDTO> setSurvey(@PathVariable String surveyId, @RequestBody SurveyDTO surveyDTO) {
         try {
@@ -49,6 +60,11 @@ public class SurveyHostController {
         }
     }
 
+    /**
+     * Returns all information for a survey by surveyId
+     * @param surveyId  ID of the survey which user is requesting details from
+     * @return SurveyDTO DTO which contains all details for a specific survey
+     */
     @GetMapping("/{surveyId}")
     public ResponseEntity<SurveyDTO> getSurvey(@PathVariable String surveyId) {
         try {
@@ -60,6 +76,11 @@ public class SurveyHostController {
         }
     }
 
+    /**
+     * Returns list of survey details for a specific user.
+     * @param hostUsername UserId of the admin/host
+     * @return List<SurveyDetailDTO> list of all surveys for a specific host user.
+     */
     @GetMapping()
     public ResponseEntity<List<SurveyDetailDTO>> getSurveyDetailsByHostname(@RequestParam("hostUsername") String hostUsername) {
         try {
@@ -72,6 +93,12 @@ public class SurveyHostController {
         }
     }
 
+    /**
+     * Allows host to make a survey LIVE/NOT-LIVE which allows users to access survey
+     * @param surveyId SurveyID of the Survey the host wants to make live or turn off
+     * @param status Which status the user wants to set the survey to: LIVE, NOT-LIVE
+     * @return ToggleStatusResponse Contains the new status and accessCode if the survey is now live
+     */
     @PutMapping("/{surveyId}/status")
     public ResponseEntity<ToggleStatusResponse> toggleSurveyStatus(@PathVariable String surveyId, @RequestParam String status) {
         try {
@@ -82,6 +109,11 @@ public class SurveyHostController {
         }
     }
 
+    /**
+     * Deletes a survey by surveyId
+     * @param surveyId SurveyId of the survey the host wants to delete
+     * @return DeleteSurveyResponse SurveyId of the survey that was deleted
+     */
     @DeleteMapping("/{surveyId}")
     public ResponseEntity<DeleteSurveyResponse> deleteSurvey(@PathVariable String surveyId) {
         try {
