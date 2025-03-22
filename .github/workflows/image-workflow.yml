@@ -39,7 +39,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ github.ref_name == 'main' && 'latest' || 'dev' }}
+            type=raw,value=${{ github.ref_name == 'main' && 'latest' || 'develop' }}
             type=sha
             type=ref,event=branch
 
