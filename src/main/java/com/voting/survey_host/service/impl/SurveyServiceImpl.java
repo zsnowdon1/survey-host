@@ -15,8 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static com.voting.survey_host.entity.Constants.LIVE;
 import static com.voting.survey_host.entity.Constants.NOT_LIVE;
@@ -84,40 +83,76 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public ToggleStatusResponse toggleSurveyStatus(String surveyId, String status) {
-        logger.info("Received request to updates survey status to " + status + " for survey ID: " + surveyId);
-        if(!status.equals(LIVE) && ! status.equals(NOT_LIVE)) {
-            throw new RuntimeException("Invalid status for survey ID: " + surveyId);
+    public Map<String, Map<String, Long>> getInitialResults(String surveyId) {
+        Map<String, Map<String, Long>> results = new HashMap<>();
+        logger.info("Fetching survey results for survey " + surveyId);
+        Set<String> questionKeys = redisTemplate.keys("survey:" + surveyId + ":question:*:results");
+
+        if(questionKeys != null) {
+            for(String questionKey: questionKeys) {
+                Map<Object, Object> choiceCounts = redisTemplate.opsForHash().entries(questionKey);
+                Map<String, Long> votes = new HashMap<>();
+                for(Map.Entry<Object, Object> entry: choiceCounts.entrySet()) {
+                    String choiceId = entry.getKey().toString();
+                    String voteCount = entry.getValue().toString();
+                    votes.put(choiceId, Long.parseLong(voteCount));
+                }
+                String questionId = questionKey.split(":")[3];
+                results.put(questionId, votes);
+            }
         }
+        return results;
+    }
+
+    @Override
+    public ToggleStatusResponse toggleSurveyStatus(String surveyId, String status) {
+        logger.info("Received request to update survey status to {} for survey ID: {}", status, surveyId);
+        validateStatus(status, surveyId);
 
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new RuntimeException("Survey not found for ID: " + surveyId));
-        if(survey.getStatus().equals(status)) {
-            throw new RuntimeException("Survey status will remain the same");
+        if (survey.getStatus().equals(status)) {
+            throw new RuntimeException("Survey status is already " + status + " for ID: " + surveyId);
         }
 
-        // If switching to LIVE, create survey hash
-        // If switching to NOT-LIVE, remove hash
         survey.setUpdatedAt(LocalDateTime.now().toString());
-        if(status.equals(LIVE) && survey.getStatus().equals(NOT_LIVE)) {
-            survey.setStatus(status);
-            String surveyHash = UUIDUtil.generateSurveyHash(survey.getTitle(), surveyId);
-            if(surveyHash == null) {
-                throw new RuntimeException("Error creating access code for survey: " + surveyId);
-            } else {
-                survey.setAccessCode(surveyHash);
-                logger.info("Adding survey: " + surveyId + " to cache");
-                redisTemplate.opsForValue().set(SURVEY_CACHE_PREFIX + surveyHash, survey);
-            }
-        } else if(status.equals(NOT_LIVE) && survey.getStatus().equals(LIVE)) {
-            logger.info("Deleting survey: " + surveyId + " from cache");
-            survey.setStatus(status);
-            redisTemplate.delete(SURVEY_CACHE_PREFIX + survey.getAccessCode());
-            survey.setAccessCode(null);
-        }
+        updateSurveyState(survey, status);
 
         surveyRepository.save(survey);
         return new ToggleStatusResponse(survey.getStatus(), survey.getAccessCode());
+    }
+
+    private void validateStatus(String status, String surveyId) {
+        if (!status.equals(LIVE) && !status.equals(NOT_LIVE)) {
+            throw new RuntimeException("Invalid status '" + status + "' for survey ID: " + surveyId);
+        }
+    }
+
+    private void updateSurveyState(Survey survey, String newStatus) {
+        String currentStatus = survey.getStatus();
+        if (newStatus.equals(LIVE) && currentStatus.equals(NOT_LIVE)) {
+            switchToLive(survey);
+        } else if (newStatus.equals(NOT_LIVE) && currentStatus.equals(LIVE)) {
+            switchToNotLive(survey);
+        }
+    }
+
+    private void switchToLive(Survey survey) {
+        survey.setStatus(LIVE);
+        String surveyHash = UUIDUtil.generateSurveyHash(survey.getTitle(), survey.getSurveyId());
+        if (surveyHash == null) {
+            throw new RuntimeException("Error creating access code for survey: " + survey.getSurveyId());
+        }
+        survey.setAccessCode(surveyHash);
+        logger.info("Adding survey {} to Redis cache with hash {}", survey.getSurveyId(), surveyHash);
+        redisTemplate.opsForValue().set(SURVEY_CACHE_PREFIX + surveyHash, survey);
+    }
+
+    private void switchToNotLive(Survey survey) {
+        logger.info("Removing survey {} from Redis cache", survey.getSurveyId());
+        redisTemplate.delete(SURVEY_CACHE_PREFIX + survey.getAccessCode());
+        survey.setStatus(NOT_LIVE);
+        survey.setAccessCode(null);
     }
 
 }
