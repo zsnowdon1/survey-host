@@ -23,7 +23,7 @@ public class RedisSubscriberImpl implements RedisSubscriber {
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(Message message) {
         try {
             String messageBody = new String(message.getBody());
             logger.info("Received Redis message: " + messageBody);
