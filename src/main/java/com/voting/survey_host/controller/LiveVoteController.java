@@ -1,6 +1,8 @@
 package com.voting.survey_host.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voting.survey_host.entity.GetSurveyResultsResponse;
+import com.voting.survey_host.entity.VoteUpdate;
 import com.voting.survey_host.service.SurveyResultService;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
@@ -71,16 +73,22 @@ public class LiveVoteController {
         }
     }
 
-    public void sendVoteUpdate(String voteData) {
-        logger.info("Sending voteData " + voteData);
-        emitters.forEach((clientId, emitter) -> {
-            try {
-                emitter.send(SseEmitter.event().name("vote-update").data(voteData));
-            } catch (Exception e) {
-                logger.error("Failed emitting voteData " + voteData);
-                emitters.remove(clientId);
-            }
-        });
+    public void sendVoteUpdate(String questionId, String choiceId, long votes) {
+        try {
+            VoteUpdate update = new VoteUpdate(questionId, choiceId, votes);
+            String voteData = new ObjectMapper().writeValueAsString(update);
+            logger.info("Sending voteData " + voteData);
+            emitters.forEach((clientId, emitter) -> {
+                try {
+                    emitter.send(SseEmitter.event().name("vote-update").data(voteData));
+                } catch (Exception e) {
+                    logger.error("Failed emitting voteData " + voteData);
+                    emitters.remove(clientId);
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Error serializing vote update: " + e.getMessage());
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.voting.survey_host.config;
 
+import com.voting.survey_host.controller.LiveVoteController;
 import com.voting.survey_host.service.RedisSubscriber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
