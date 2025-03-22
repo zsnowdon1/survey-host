@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -44,6 +45,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SurveyDTO createSurvey(SurveyDTO surveyDTO) {
         Survey newSurvey = SurveyMapper.toEntitySurvey(surveyDTO);
+        surveyDTO.setCreatedAt(LocalDateTime.now().toString());
         surveyRepository.insert(newSurvey);
         return SurveyMapper.toDTOSurvey(newSurvey);
     }
@@ -51,6 +53,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SurveyDTO setSurvey(SurveyDTO surveyDTO) {
         Survey newSurvey = SurveyMapper.toEntitySurvey(surveyDTO);
+        newSurvey.setUpdatedAt(LocalDateTime.now().toString());
         if(Boolean.TRUE.equals(redisTemplate.hasKey(SURVEY_CACHE_PREFIX + surveyDTO.getSurveyId()))) {
             logger.info("Deleting survey: " + surveyDTO.getSurveyId() + " from cache");
             redisTemplate.delete(SURVEY_CACHE_PREFIX + surveyDTO.getSurveyId());
@@ -95,6 +98,7 @@ public class SurveyServiceImpl implements SurveyService {
 
         // If switching to LIVE, create survey hash
         // If switching to NOT-LIVE, remove hash
+        survey.setUpdatedAt(LocalDateTime.now().toString());
         if(status.equals(LIVE) && survey.getStatus().equals(NOT_LIVE)) {
             survey.setStatus(status);
             String surveyHash = UUIDUtil.generateSurveyHash(survey.getTitle(), surveyId);
