@@ -25,16 +25,17 @@ public class CustomSurveyRepositoryImpl implements CustomSurveyRepository {
 
     @Override
     public List<SurveyDetailDTO> findSurveyDetailsByHostUsername(String hostUsername) {
-        logger.info("Looking for survey data");
-        MatchOperation matchStage = Aggregation.match(new Criteria("hostUsername").is(hostUsername));
+        logger.info("Looking for survey data for host: {}", hostUsername);
+        MatchOperation matchStage = Aggregation.match(Criteria.where("hostUsername").is(hostUsername));
         ProjectionOperation projectStage = Aggregation.project("title", "surveyId", "questions", "status", "accessCode")
-                .and(ArrayOperators.Size.lengthOfArray(
-                        ConditionalOperators.ifNull("questions").then(Collections.emptyList())
-                )).as("questionCount");
+                .andExpression("size(ifNull(questions, []))").as("questionCount");
 
         Aggregation aggregation = Aggregation.newAggregation(matchStage, projectStage);
+        logger.debug("Executing aggregation: {}", aggregation);
         AggregationResults<SurveyDetailDTO> results = mongoTemplate.aggregate(aggregation, "surveys", SurveyDetailDTO.class);
-        return results.getMappedResults();
+        List<SurveyDetailDTO> mappedResults = results.getMappedResults();
+        logger.info("Found {} survey details for host: {}", mappedResults.size(), hostUsername);
+        return mappedResults;
     }
 
 }

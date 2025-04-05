@@ -70,7 +70,12 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SurveyDTO getSurvey(String surveyId) {
         return surveyRepository.findById(surveyId)
+<<<<<<< Updated upstream
                 .map(SurveyMapper::toDTOSurvey).orElseThrow(() -> new NoSuchElementException("Couldn't find survey"));
+=======
+                .map(SurveyMapper::mapToDTO)
+                .orElseThrow(() -> new NoSuchElementException("Survey not found: " + surveyId));
+>>>>>>> Stashed changes
     }
 
     @Override
