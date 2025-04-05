@@ -5,21 +5,17 @@ import com.voting.entities.SurveyDetailDTO;
 import com.voting.mongoData.Survey;
 import com.voting.survey_host.dao.CustomSurveyRepository;
 import com.voting.survey_host.dao.SurveyRepository;
+import com.voting.survey_host.dao.SurveyStateManager;
 import com.voting.survey_host.entity.ToggleStatusResponse;
 import com.voting.survey_host.service.SurveyService;
-import com.voting.survey_host.utils.UUIDUtil;
 import com.voting.utils.SurveyMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
-import static com.voting.survey_host.entity.Constants.LIVE;
-import static com.voting.survey_host.entity.Constants.NOT_LIVE;
 
 @Service
 public class SurveyServiceImpl implements SurveyService {
@@ -28,101 +24,74 @@ public class SurveyServiceImpl implements SurveyService {
 
     private final SurveyRepository surveyRepository;
 
-    private final RedisTemplate<String, Object> redisTemplate;
-
-    private static final String SURVEY_CACHE_PREFIX = "Survey:";
+    private final SurveyStateManager surveyStateManager;
 
     private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
 
     public SurveyServiceImpl(CustomSurveyRepository customSurveyRepository,
                              SurveyRepository surveyRepository,
-                             RedisTemplate<String, Object>  redisTemplate) {
+                             SurveyStateManager surveyStateManager) {
         this.customSurveyRepository = customSurveyRepository;
         this.surveyRepository = surveyRepository;
-        this.redisTemplate = redisTemplate;
+        this.surveyStateManager = surveyStateManager;
     }
 
     @Override
     public SurveyDTO createSurvey(SurveyDTO surveyDTO) {
-        Survey newSurvey = SurveyMapper.toEntitySurvey(surveyDTO);
-        surveyDTO.setCreatedAt(LocalDateTime.now().toString());
+        logger.info("Creating survey for host: {}", surveyDTO.getHostUsername());
+        Survey newSurvey = SurveyMapper.mapToMongo(surveyDTO);
+        newSurvey.setCreatedAt(LocalDateTime.now().toString());
+        newSurvey.setUpdatedAt(LocalDateTime.now().toString());
+        newSurvey.setStatus("NOT-LIVE");
         surveyRepository.insert(newSurvey);
-        return SurveyMapper.toDTOSurvey(newSurvey);
+        logger.info("Survey created with ID: {}", newSurvey.getSurveyId());
+        return SurveyMapper.mapToDTO(newSurvey);
     }
 
     @Override
     public SurveyDTO setSurvey(SurveyDTO surveyDTO) {
-        Survey newSurvey = SurveyMapper.toEntitySurvey(surveyDTO);
+        Survey newSurvey = SurveyMapper.mapToMongo(surveyDTO);
         newSurvey.setUpdatedAt(LocalDateTime.now().toString());
-        if(Boolean.TRUE.equals(redisTemplate.hasKey(SURVEY_CACHE_PREFIX + surveyDTO.getSurveyId()))) {
-            logger.info("Deleting survey: " + surveyDTO.getSurveyId() + " from cache");
-            redisTemplate.delete(SURVEY_CACHE_PREFIX + surveyDTO.getSurveyId());
-        }
         return surveyRepository.findById(newSurvey.getSurveyId())
                 .map(existingSurvey -> {
                     newSurvey.setSurveyId(existingSurvey.getSurveyId());
                     surveyRepository.save(newSurvey);
-                    return SurveyMapper.toDTOSurvey(newSurvey);
+                    surveyStateManager.clearCacheIfExists(newSurvey.getSurveyId());
+                    return SurveyMapper.mapToDTO(newSurvey);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Couldn't update survey"));
+                .orElseThrow(() -> new NoSuchElementException("Survey not found: " + newSurvey.getSurveyId()));
     }
 
     @Override
     public SurveyDTO getSurvey(String surveyId) {
+        logger.info("Fetching survey with ID: {}", surveyId);
         return surveyRepository.findById(surveyId)
-<<<<<<< Updated upstream
-                .map(SurveyMapper::toDTOSurvey).orElseThrow(() -> new NoSuchElementException("Couldn't find survey"));
-=======
                 .map(SurveyMapper::mapToDTO)
                 .orElseThrow(() -> new NoSuchElementException("Survey not found: " + surveyId));
->>>>>>> Stashed changes
     }
 
     @Override
     public List<SurveyDetailDTO> getSurveyDetailsByHostUsername(String hostUsername) {
+        logger.info("Fetching survey details for host: {}", hostUsername);
         return customSurveyRepository.findSurveyDetailsByHostUsername(hostUsername);
     }
 
     @Override
     public void deleteSurvey(String surveyId) {
+        logger.info("Deleting survey with ID: {}", surveyId);
         surveyRepository.deleteById(surveyId);
     }
 
     @Override
+    public Map<String, Map<String, Long>> getInitialResults(String surveyId) {
+        logger.info("Fetching initial results for survey: {}", surveyId);
+        return surveyStateManager.getInitialResults(surveyId);
+    }
+
+    @Override
     public ToggleStatusResponse toggleSurveyStatus(String surveyId, String status) {
-        logger.info("Received request to updates survey status to " + status + " for survey ID: " + surveyId);
-        if(!status.equals(LIVE) && ! status.equals(NOT_LIVE)) {
-            throw new RuntimeException("Invalid status for survey ID: " + surveyId);
-        }
-
-        Survey survey = surveyRepository.findById(surveyId)
-                .orElseThrow(() -> new RuntimeException("Survey not found for ID: " + surveyId));
-        if(survey.getStatus().equals(status)) {
-            throw new RuntimeException("Survey status will remain the same");
-        }
-
-        // If switching to LIVE, create survey hash
-        // If switching to NOT-LIVE, remove hash
-        survey.setUpdatedAt(LocalDateTime.now().toString());
-        if(status.equals(LIVE) && survey.getStatus().equals(NOT_LIVE)) {
-            survey.setStatus(status);
-            String surveyHash = UUIDUtil.generateSurveyHash(survey.getTitle(), surveyId);
-            if(surveyHash == null) {
-                throw new RuntimeException("Error creating access code for survey: " + surveyId);
-            } else {
-                survey.setAccessCode(surveyHash);
-                logger.info("Adding survey: " + surveyId + " to cache");
-                redisTemplate.opsForValue().set(SURVEY_CACHE_PREFIX + surveyHash, survey);
-            }
-        } else if(status.equals(NOT_LIVE) && survey.getStatus().equals(LIVE)) {
-            logger.info("Deleting survey: " + surveyId + " from cache");
-            survey.setStatus(status);
-            redisTemplate.delete(SURVEY_CACHE_PREFIX + survey.getAccessCode());
-            survey.setAccessCode(null);
-        }
-
-        surveyRepository.save(survey);
-        return new ToggleStatusResponse(survey.getStatus(), survey.getAccessCode());
+        logger.info("Toggling status for survey: {} to {}", surveyId, status);
+        return surveyStateManager.toggleSurveyStatus(surveyId, status);
     }
 
 }
