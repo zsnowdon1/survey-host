@@ -34,7 +34,6 @@ public class SurveyHostController {
     @PostMapping()
     public ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO surveyDTO) {
         try {
-            surveyDTO.setStatus("NOT-LIVE");
             SurveyDTO newSurvey = surveyService.createSurvey(surveyDTO);
             return new ResponseEntity<>(newSurvey, HttpStatus.CREATED);
         } catch (Exception e) {
