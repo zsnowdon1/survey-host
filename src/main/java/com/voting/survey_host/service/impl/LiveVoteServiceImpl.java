@@ -7,6 +7,7 @@ import com.voting.survey_host.service.LiveVoteService;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -26,14 +27,19 @@ public class LiveVoteServiceImpl implements LiveVoteService {
     private final Map<String, CopyOnWriteArrayList<SseEmitter>> emitters = new ConcurrentHashMap<>();
     private final Map<String, MessageListener> listeners = new ConcurrentHashMap<>();
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> messageRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final SurveyService surveyResultService;
     private final ObjectMapper objectMapper;
     private static final Logger logger = LoggerFactory.getLogger(LiveVoteServiceImpl.class);
 
-    public LiveVoteServiceImpl(RedisTemplate<String, Object> redisTemplate, RedisMessageListenerContainer redisMessageListenerContainer,
-                               SurveyService surveyResultService, ObjectMapper objectMapper) {
+    public LiveVoteServiceImpl(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate,
+                               @Qualifier("messageRedisTemplate") RedisTemplate<String, Object> messageRedisTemplate,
+                               RedisMessageListenerContainer redisMessageListenerContainer,
+                               SurveyService surveyResultService,
+                               ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
+        this.messageRedisTemplate = messageRedisTemplate;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
         this.surveyResultService = surveyResultService;
         this.objectMapper = objectMapper;
@@ -67,20 +73,22 @@ public class LiveVoteServiceImpl implements LiveVoteService {
     private void subscribeToSurveyResults(String surveyId) {
         String channel = "survey:" + surveyId + ":results";
         CopyOnWriteArrayList<SseEmitter> surveyEmitters = emitters.get(surveyId);
+        logger.debug("Checking subscription for survey {}, emitter count: {}", surveyId, surveyEmitters != null ? surveyEmitters.size() : 0);
         if (surveyEmitters != null && surveyEmitters.size() == 1) {
             MessageListener listener = (message, pattern) -> {
                 try {
-                    String messageBody = new String(message.getBody());
-                    logger.info("Received Redis message on channel {}: {}", channel, messageBody);
-                    VoteUpdate voteUpdate = objectMapper.readValue(messageBody, VoteUpdate.class);
-                    sendVoteUpdate(surveyId, voteUpdate.getQuestionId(), voteUpdate.getChoiceId(), voteUpdate.getVotes());
-                } catch (IOException e) {
+                    VoteUpdate voteUpdate = (VoteUpdate) messageRedisTemplate.getValueSerializer().deserialize(message.getBody());
+                    logger.info("Received Redis message on channel {}: {}", channel, voteUpdate);
+                    sendVoteUpdate(surveyId, voteUpdate);
+                } catch (Exception e) {
                     logger.error("Error processing Redis message for survey {}: {}", surveyId, e.getMessage());
                 }
             };
-            listeners.put(surveyId, listener); // Store the listener
+            listeners.put(surveyId, listener);
             redisMessageListenerContainer.addMessageListener(listener, new ChannelTopic(channel));
             logger.info("Subscribed to Redis channel: {}", channel);
+        } else {
+            logger.debug("Subscription skipped for survey {}, already subscribed or no emitters", surveyId);
         }
     }
 
@@ -95,10 +103,9 @@ public class LiveVoteServiceImpl implements LiveVoteService {
         }
     }
 
-    public void sendVoteUpdate(String surveyId, String questionId, String choiceId, long votes) {
-        VoteUpdate update = new VoteUpdate(questionId, choiceId, votes);
+    public void sendVoteUpdate(String surveyId, VoteUpdate voteUpdate) {
         try {
-            String voteData = objectMapper.writeValueAsString(update);
+            String voteData = new ObjectMapper().writeValueAsString(voteUpdate);
             logger.info("Sending vote update for survey {}: {}", surveyId, voteData);
             CopyOnWriteArrayList<SseEmitter> surveyEmitters = emitters.get(surveyId);
             if (surveyEmitters != null) {

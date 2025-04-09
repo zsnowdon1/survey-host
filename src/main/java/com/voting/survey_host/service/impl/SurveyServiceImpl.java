@@ -40,6 +40,7 @@ public class SurveyServiceImpl implements SurveyService {
     public SurveyDTO createSurvey(SurveyDTO surveyDTO) {
         logger.info("Creating survey for host: {}", surveyDTO.getHostUsername());
         Survey newSurvey = SurveyMapper.mapToMongo(surveyDTO);
+        newSurvey.setSurveyId(UUID.randomUUID().toString());
         newSurvey.setCreatedAt(LocalDateTime.now().toString());
         newSurvey.setUpdatedAt(LocalDateTime.now().toString());
         newSurvey.setStatus("NOT-LIVE");
