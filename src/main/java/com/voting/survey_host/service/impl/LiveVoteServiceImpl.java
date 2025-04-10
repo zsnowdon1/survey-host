@@ -30,25 +30,23 @@ public class LiveVoteServiceImpl implements LiveVoteService {
     private final RedisTemplate<String, Object> messageRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final SurveyService surveyResultService;
-    private final ObjectMapper objectMapper;
+    private static final String REDIS_SURVEY_RESULT_PREFIX = "survey:hosts:";
     private static final Logger logger = LoggerFactory.getLogger(LiveVoteServiceImpl.class);
 
     public LiveVoteServiceImpl(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate,
                                @Qualifier("messageRedisTemplate") RedisTemplate<String, Object> messageRedisTemplate,
                                RedisMessageListenerContainer redisMessageListenerContainer,
-                               SurveyService surveyResultService,
-                               ObjectMapper objectMapper) {
+                               SurveyService surveyResultService) {
         this.redisTemplate = redisTemplate;
         this.messageRedisTemplate = messageRedisTemplate;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
         this.surveyResultService = surveyResultService;
-        this.objectMapper = objectMapper;
     }
 
     @Override
     public SseEmitter streamResults(String surveyId) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        String key = "survey:" + surveyId + ":active-hosts";
+        String key = REDIS_SURVEY_RESULT_PREFIX + surveyId;
         String sessionId = UUID.randomUUID().toString();
 
         // Register host presence with TTL

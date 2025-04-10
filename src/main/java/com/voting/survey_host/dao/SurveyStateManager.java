@@ -20,7 +20,7 @@ import static com.voting.survey_host.entity.Constants.NOT_LIVE;
 public class SurveyStateManager {
     private final SurveyRepository surveyRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-    private static final String SURVEY_CACHE_PREFIX = "Survey:";
+    private static final String REDIS_SURVEY_CACHE_PREFIX = "survey:cache:";
     private static final Logger logger = LoggerFactory.getLogger(SurveyStateManager.class);
 
     public SurveyStateManager(SurveyRepository surveyRepository, RedisTemplate<String, Object> redisTemplate) {
@@ -29,9 +29,9 @@ public class SurveyStateManager {
     }
 
     public void clearCacheIfExists(String surveyId) {
-        if(Boolean.TRUE.equals(redisTemplate.hasKey(SURVEY_CACHE_PREFIX + surveyId))) {
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(REDIS_SURVEY_CACHE_PREFIX + surveyId))) {
             logger.info("Deleting survey: " + surveyId + " from cache");
-            redisTemplate.delete(SURVEY_CACHE_PREFIX + surveyId);
+            redisTemplate.delete(REDIS_SURVEY_CACHE_PREFIX + surveyId);
         }
     }
 
@@ -96,12 +96,12 @@ public class SurveyStateManager {
         }
         survey.setAccessCode(surveyHash);
         logger.info("Adding survey {} to Redis cache with hash {}", survey.getSurveyId(), surveyHash);
-        redisTemplate.opsForValue().set(SURVEY_CACHE_PREFIX + surveyHash, survey);
+        redisTemplate.opsForValue().set(REDIS_SURVEY_CACHE_PREFIX + surveyHash, survey);
     }
 
     private void switchToNotLive(Survey survey) {
         logger.info("Removing survey {} from Redis cache", survey.getSurveyId());
-        redisTemplate.delete(SURVEY_CACHE_PREFIX + survey.getAccessCode());
+        redisTemplate.delete(REDIS_SURVEY_CACHE_PREFIX + survey.getAccessCode());
         survey.setStatus(NOT_LIVE);
         survey.setAccessCode(null);
     }
