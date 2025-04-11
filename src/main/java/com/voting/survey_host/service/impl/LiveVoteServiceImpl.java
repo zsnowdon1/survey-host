@@ -27,14 +27,14 @@ public class LiveVoteServiceImpl implements LiveVoteService {
     private final Map<String, CopyOnWriteArrayList<SseEmitter>> emitters = new ConcurrentHashMap<>();
     private final Map<String, MessageListener> listeners = new ConcurrentHashMap<>();
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisTemplate<String, Object> messageRedisTemplate;
+    private final RedisTemplate<String, VoteUpdate> messageRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final SurveyService surveyResultService;
     private static final String REDIS_SURVEY_RESULT_PREFIX = "survey:hosts:";
     private static final Logger logger = LoggerFactory.getLogger(LiveVoteServiceImpl.class);
 
     public LiveVoteServiceImpl(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate,
-                               @Qualifier("messageRedisTemplate") RedisTemplate<String, Object> messageRedisTemplate,
+                               @Qualifier("messageRedisTemplate") RedisTemplate<String, VoteUpdate> messageRedisTemplate,
                                RedisMessageListenerContainer redisMessageListenerContainer,
                                SurveyService surveyResultService) {
         this.redisTemplate = redisTemplate;

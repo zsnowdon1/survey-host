@@ -8,6 +8,7 @@ import com.voting.survey_host.dao.SurveyRepository;
 import com.voting.survey_host.dao.SurveyStateManager;
 import com.voting.survey_host.entity.ToggleStatusResponse;
 import com.voting.survey_host.service.SurveyService;
+import com.voting.survey_host.utils.SurveyServiceHelper;
 import com.voting.utils.SurveyMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class SurveyServiceImpl implements SurveyService {
         newSurvey.setCreatedAt(LocalDateTime.now().toString());
         newSurvey.setUpdatedAt(LocalDateTime.now().toString());
         newSurvey.setStatus("NOT-LIVE");
+        SurveyServiceHelper.populateRandomIds(newSurvey);
         surveyRepository.insert(newSurvey);
         logger.info("Survey created with ID: {}", newSurvey.getSurveyId());
         return SurveyMapper.mapToDTO(newSurvey);

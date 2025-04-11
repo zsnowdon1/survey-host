@@ -1,5 +1,6 @@
 package com.voting.survey_host.config;
 
+import com.voting.entities.VoteUpdate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,10 +41,10 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> messageRedisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, VoteUpdate> messageRedisTemplate() {
+        RedisTemplate<String, VoteUpdate> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
-        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        Jackson2JsonRedisSerializer<VoteUpdate> serializer = new Jackson2JsonRedisSerializer<>(VoteUpdate.class);
 
         template.setValueSerializer(serializer);
         template.setHashValueSerializer(serializer);
