@@ -3,15 +3,19 @@ package com.voting.survey_host.utils;
 import com.voting.mongoData.Choice;
 import com.voting.mongoData.Question;
 import com.voting.mongoData.Survey;
+import io.netty.util.internal.StringUtil;
+
 import java.util.UUID;
 
 public class SurveyServiceHelper {
 
     public static void populateRandomIds(Survey survey) {
         for (Question question : survey.getQuestions()) {
-            question.setQuestionId(UUID.randomUUID().toString());
+            if(question.getQuestionId().isEmpty())
+                question.setQuestionId(UUID.randomUUID().toString());
             for (Choice choice : question.getChoices()) {
-                choice.setChoiceId(UUID.randomUUID().toString());
+                if(choice.getChoiceId().isEmpty())
+                    choice.setChoiceId(UUID.randomUUID().toString());
             }
         }
     }

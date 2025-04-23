@@ -3,6 +3,7 @@ package com.voting.survey_host.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voting.survey_host.entity.GetSurveyResultsResponse;
 import com.voting.entities.VoteUpdate;
+import com.voting.survey_host.entity.RedisVoteUpdate;
 import com.voting.survey_host.service.LiveVoteService;
 import com.voting.survey_host.service.SurveyService;
 import org.slf4j.Logger;
@@ -27,14 +28,14 @@ public class LiveVoteServiceImpl implements LiveVoteService {
     private final Map<String, CopyOnWriteArrayList<SseEmitter>> emitters = new ConcurrentHashMap<>();
     private final Map<String, MessageListener> listeners = new ConcurrentHashMap<>();
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisTemplate<String, VoteUpdate> messageRedisTemplate;
+    private final RedisTemplate<String, RedisVoteUpdate> messageRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final SurveyService surveyResultService;
     private static final String REDIS_SURVEY_RESULT_PREFIX = "survey:hosts:";
     private static final Logger logger = LoggerFactory.getLogger(LiveVoteServiceImpl.class);
 
     public LiveVoteServiceImpl(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate,
-                               @Qualifier("messageRedisTemplate") RedisTemplate<String, VoteUpdate> messageRedisTemplate,
+                               @Qualifier("messageRedisTemplate") RedisTemplate<String, RedisVoteUpdate> messageRedisTemplate,
                                RedisMessageListenerContainer redisMessageListenerContainer,
                                SurveyService surveyResultService) {
         this.redisTemplate = redisTemplate;
@@ -75,7 +76,7 @@ public class LiveVoteServiceImpl implements LiveVoteService {
         if (surveyEmitters != null && surveyEmitters.size() == 1) {
             MessageListener listener = (message, pattern) -> {
                 try {
-                    VoteUpdate voteUpdate = (VoteUpdate) messageRedisTemplate.getValueSerializer().deserialize(message.getBody());
+                    RedisVoteUpdate voteUpdate = (RedisVoteUpdate) messageRedisTemplate.getValueSerializer().deserialize(message.getBody());
                     logger.info("Received Redis message on channel {}: {}", channel, voteUpdate);
                     sendVoteUpdate(surveyId, voteUpdate);
                 } catch (Exception e) {
@@ -101,7 +102,7 @@ public class LiveVoteServiceImpl implements LiveVoteService {
         }
     }
 
-    public void sendVoteUpdate(String surveyId, VoteUpdate voteUpdate) {
+    public void sendVoteUpdate(String surveyId, RedisVoteUpdate voteUpdate) {
         try {
             String voteData = new ObjectMapper().writeValueAsString(voteUpdate);
             logger.info("Sending vote update for survey {}: {}", surveyId, voteData);

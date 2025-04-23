@@ -55,6 +55,7 @@ public class SurveyServiceImpl implements SurveyService {
     public SurveyDTO setSurvey(SurveyDTO surveyDTO) {
         Survey newSurvey = SurveyMapper.mapToMongo(surveyDTO);
         newSurvey.setUpdatedAt(LocalDateTime.now().toString());
+        SurveyServiceHelper.populateRandomIds(newSurvey);
         return surveyRepository.findById(newSurvey.getSurveyId())
                 .map(existingSurvey -> {
                     newSurvey.setSurveyId(existingSurvey.getSurveyId());
