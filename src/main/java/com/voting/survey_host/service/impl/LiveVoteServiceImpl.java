@@ -2,7 +2,6 @@ package com.voting.survey_host.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voting.survey_host.entity.GetSurveyResultsResponse;
-import com.voting.entities.VoteUpdate;
 import com.voting.survey_host.entity.RedisVoteUpdate;
 import com.voting.survey_host.service.LiveVoteService;
 import com.voting.survey_host.service.SurveyService;
@@ -31,6 +30,7 @@ public class LiveVoteServiceImpl implements LiveVoteService {
     private final RedisTemplate<String, RedisVoteUpdate> messageRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final SurveyService surveyResultService;
+    private final ObjectMapper objectMapper;
     private static final String REDIS_SURVEY_RESULT_PREFIX = "survey:hosts:";
     private static final Logger logger = LoggerFactory.getLogger(LiveVoteServiceImpl.class);
 
@@ -42,6 +42,7 @@ public class LiveVoteServiceImpl implements LiveVoteService {
         this.messageRedisTemplate = messageRedisTemplate;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
         this.surveyResultService = surveyResultService;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -104,7 +105,7 @@ public class LiveVoteServiceImpl implements LiveVoteService {
 
     public void sendVoteUpdate(String surveyId, RedisVoteUpdate voteUpdate) {
         try {
-            String voteData = new ObjectMapper().writeValueAsString(voteUpdate);
+            String voteData = objectMapper.writeValueAsString(voteUpdate);
             logger.info("Sending vote update for survey {}: {}", surveyId, voteData);
             CopyOnWriteArrayList<SseEmitter> surveyEmitters = emitters.get(surveyId);
             if (surveyEmitters != null) {

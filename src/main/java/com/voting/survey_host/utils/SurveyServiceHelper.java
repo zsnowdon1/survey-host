@@ -3,7 +3,6 @@ package com.voting.survey_host.utils;
 import com.voting.mongoData.Choice;
 import com.voting.mongoData.Question;
 import com.voting.mongoData.Survey;
-import io.netty.util.internal.StringUtil;
 
 import java.util.UUID;
 

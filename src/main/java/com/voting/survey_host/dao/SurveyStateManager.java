@@ -16,6 +16,9 @@ import java.util.Set;
 import static com.voting.survey_host.entity.Constants.LIVE;
 import static com.voting.survey_host.entity.Constants.NOT_LIVE;
 
+/**
+ *
+ */
 @Component
 public class SurveyStateManager {
     private final SurveyRepository surveyRepository;
